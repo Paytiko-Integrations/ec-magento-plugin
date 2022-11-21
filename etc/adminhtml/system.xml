@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="payment">
+            <group id="paytiko" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                <label><![CDATA[Paytiko]]></label>
+                <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable PaytikoGateway</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="title" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title</label>
+                </field>
+                <field id="activation_key" translate="label" type="text" sortOrder="52" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Activation Key</label>
+                </field>
+
+                <field id="private_key" translate="label" type="text" sortOrder="52" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>private Key</label>
+                </field>
+
+                <field id="environment" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Payment Mode</label>
+                    <source_model>Paytiko\Paytikopayment\Model\Environment</source_model>
+                    <config_path>payment/paytiko/environment</config_path>
+                </field>
+                
+            </group>
+        </section>
+    </system>
+</config>

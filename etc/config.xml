@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <paytiko>
+                <model>Paytiko\Paytikopayment\Model\Paytiko</model>
+                <title>PaytikoGateway</title>
+                <redirect_url>paytiko/standard/redirect</redirect_url>
+                <return_url>paytiko/standard/response</return_url>
+                <notify_url>paytiko/standard/notify</notify_url>
+                <app_id backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <secret_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+            </paytiko>
+        </payment>
+    </default>
+</config>

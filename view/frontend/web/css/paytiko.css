@@ -2,3 +2,9 @@
 #placeholder_paytikonew{
 	height: 100%;
 }
+.modal-footer {
+  display: none;
+}
+.modal-header {
+  display: none;
+}

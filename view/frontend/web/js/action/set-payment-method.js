@@ -22,12 +22,9 @@ define(
                 email = customer.customerData.email;
             }
 
+            fullScreenLoader.startLoader();
 
             serviceUrl = window.checkoutConfig.payment.paytiko.redirectUrl+'?email='+email;
-            // console.log(window.checkoutConfig.payment.paytiko.redirectUrl);
-            // console.log(serviceUrl);
-            //alert(serviceUrl);
-            //fullScreenLoader.startLoader();
             
             $.ajax({
                 url: serviceUrl,
@@ -37,18 +34,8 @@ define(
                 dataType: 'json',
                 success: function (response) {
                     if ($.type(response) === 'object' && !$.isEmptyObject(response)) {
-
+                        fullScreenLoader.stopLoader();
                         
-
-                        //alert(response.activation_key);
-                        //console.log("working");
-                        // console.log(response.activation_key);
-                        // console.log(response.cashierBaseUrl);
-                        // console.log(response.coreBaseUrl);
-                        // console.log(response.embedScriptUrl);
-                        // console.log(response.token_val);
-                        
-                        $('#paytiko_payment_form').remove();
                         form = formBuilder.build(
                             {
                                 action: response.url,
@@ -58,7 +45,7 @@ define(
                         
                         
                         customerData.invalidate(['cart']);
-                        //fullScreenLoader.startLoader();
+                        
 
                         window.paytikoEcommerceSdk.renderCashier({
                                 containerSelector: '#placeholder_paytikonew',
@@ -71,14 +58,14 @@ define(
                            type: 'popup',
                            modalClass: 'modal-popup',
                            responsive: true,
-                           buttons: []
+                           clickableOverlay: false
                        };
                        var callforoption = modal(modaloption, $('.callfor-popup'));
                        $('.callfor-popup').modal('openModal');
                        $("#placeholder_paytikonew").modal('show');
 
-                        fullScreenLoader.stopLoader();
-                        //form.submit();
+                       modal_overlay_element.css("display", "block");
+                       
                     } else {
                         fullScreenLoader.stopLoader();
                         alert({

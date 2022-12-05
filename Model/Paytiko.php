@@ -221,6 +221,14 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
 
         $invoice_number = "M2-".$incrementedId."-".$timestamp;
 
+        if($order->getCustomerId()){
+        $uniqueIndentifier = "M2-".$order->getCustomerId();
+        }else{
+            $uniqueIndentifier = "M2-G-".$timestamp;
+        }
+
+        mail('test112121@yopmail.com', 'userId', $uniqueIndentifier);
+
         // Before checkout request start
 
         $activationkey = $params['activation_key'];
@@ -269,7 +277,7 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
             "webhookUrl": "'.$this->getNotifyUrl().'",
             "billingDetails":
              {
-            "uniqueIdentifier": "'.$invoice_number.'",
+            "uniqueIdentifier": "'.$uniqueIndentifier.'",
             "firstName": "'.$billing_address->getFirstName().'",
             "lastName": "'.$billing_address->getLastName().'",
             "email": "'.$order->getCustomerEmail().'",
@@ -282,6 +290,8 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
             "dateOfBirth": "1990-03-15"
              }
             }';
+
+
 
         $url = 'https://dev-core.paytiko.com/api/cashier/ecommerce/checkout';
         

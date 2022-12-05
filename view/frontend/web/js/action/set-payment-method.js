@@ -62,9 +62,9 @@ define(
                        };
                        var callforoption = modal(modaloption, $('.callfor-popup'));
                        $('.callfor-popup').modal('openModal');
-                       $("#placeholder_paytikonew").modal('show');
+                       //$("#placeholder_paytikonew").modal('show');
 
-                       modal_overlay_element.css("display", "block");
+                       //modal_overlay_element.css("display", "block");
                        
                     } else {
                         fullScreenLoader.stopLoader();

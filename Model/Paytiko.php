@@ -291,8 +291,6 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
              }
             }';
 
-            mail('test112121@yopmail.com', 'curl', $inputString);
-
 
         $url = 'https://dev-core.paytiko.com/api/cashier/ecommerce/checkout';
         

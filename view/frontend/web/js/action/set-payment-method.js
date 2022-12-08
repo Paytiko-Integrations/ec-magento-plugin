@@ -12,7 +12,8 @@ define(
     function ($, quote, customerData,customer, fullScreenLoader, formBuilder,alert,modal) {
         'use strict';
         return function (messageContainer) {
-            var serviceUrl,
+            var restorecart,
+                serviceUrl,
                 email,
                 form;
 
@@ -25,6 +26,8 @@ define(
             fullScreenLoader.startLoader();
 
             serviceUrl = window.checkoutConfig.payment.paytiko.redirectUrl+'?email='+email;
+
+            restorecart = window.checkoutConfig.payment.paytiko.redirectUrl+'?cartrestore=yes&email='+email;
             
             $.ajax({
                 url: serviceUrl,
@@ -58,13 +61,32 @@ define(
                            type: 'popup',
                            modalClass: 'modal-popup',
                            responsive: true,
-                           clickableOverlay: false
+                           clickableOverlay: false,
+                           buttons: [{
+                                text: $.mage.__('Proceed'),
+                                class: '',
+                                click: function () {
+                                    /* some stuff */
+                                    this.closeModal();
+                                }
+                            }]
                        };
                        var callforoption = modal(modaloption, $('.callfor-popup'));
                        $('.callfor-popup').modal('openModal');
-                       //$("#placeholder_paytikonew").modal('show');
+                       
+                       $('.modal-popup').on('modalclosed', function() { 
+                                
+                                $.ajax({
+                                    url: restorecart,
+                                    type: 'get',
+                                    context: this,
+                                    dataType: 'json',
+                                    success: function (response) {
+                                    }
+                                });
 
-                       //modal_overlay_element.css("display", "block");
+
+                        });
                        
                     } else {
                         fullScreenLoader.stopLoader();

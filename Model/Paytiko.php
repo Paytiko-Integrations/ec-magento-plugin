@@ -143,11 +143,13 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
     }
 
     public function getpaytikotransstatus($payment_ref){
+
       $env = $this->getConfigData('environment');
          $params["private_key"] = $this->getConfigData("private_key");
          $private_key = $params['private_key'];
 
-       $curl = curl_init();
+
+            $curl = curl_init();
 
             curl_setopt_array($curl, [
                 CURLOPT_URL => "https://dev-core.paytiko.com/api/cashier/ecommerce/orderStatus/$payment_ref",
@@ -164,12 +166,12 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
             ]);
 
             $response = curl_exec($curl);
-            $err = curl_error($curl);
+
+            
 
             curl_close($curl);
 
             $output = json_decode($response);
-
 
         return $output;
     }
@@ -191,6 +193,12 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         $params["customerName"] = $billing_address->getFirstName(). " ". $billing_address->getLastName();
         $params["customerEmail"] = $order->getCustomerEmail();
         $params["customerPhone"] = $billing_address->getTelephone();
+
+        $streetaddress = implode(" ", $billing_address->getStreet());
+                                    
+
+
+
 
         $appId = $params["appId"];
         $incrementedId = $params["orderId"];
@@ -281,7 +289,7 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
             "firstName": "'.$billing_address->getFirstName().'",
             "lastName": "'.$billing_address->getLastName().'",
             "email": "'.$order->getCustomerEmail().'",
-            "street": "'.$billing_address->getCity().'",
+            "street": "'.$streetaddress.'",
             "region": "'.$billing_address->getRegion().'",
             "city": "'.$billing_address->getCity().'",
             "phone": "'.$billing_address->getTelephone().'",

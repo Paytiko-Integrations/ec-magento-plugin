@@ -12,6 +12,19 @@ class Notify extends \Paytiko\Paytikopayment\Controller\PaytikoAbstract
         $orderRef = $action["OrderId"];
         $status = $action["TransactionStatus"];
 
+ $private_key = \Magento\Framework\App\ObjectManager::getInstance()
+                ->get(\Magento\Framework\App\Config\ScopeConfigInterface::class)
+                ->getValue(
+                    "payment/paytiko/private_key",
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+                );
+
+        if($action['Signature'] != hash('sha256', "$private_key:$orderRef") ){
+                exit();
+        }
+
+
+
         $paymentMethod = $this->getPaymentMethod();
 
         $this->_resources = \Magento\Framework\App\ObjectManager::getInstance()->get(

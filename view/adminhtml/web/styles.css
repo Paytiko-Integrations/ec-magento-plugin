@@ -9,3 +9,14 @@
 .paytiko-section .paytiko-payment-text { 
     display: inline-block; vertical-align: middle; width: 50%
 }
+
+#row_payment_us_paytiko_cashierBaseUrl{
+    display:none;
+}
+#row_payment_us_paytiko_coreBaseUrl{
+    display:none;
+}
+
+#row_payment_us_paytiko_embedScriptUrl{
+    display:none;
+}

@@ -21,19 +21,15 @@ class Response extends \Paytiko\Paytikopayment\Controller\PaytikoAbstract
                     "Payment failed. Please try again or choose a different payment method"
                 )
             );
-
             $returnUrl = $this->getCheckoutHelper()->getUrl("checkout/cart");
         } else {
             try {
                 $paymentMethod = $this->getPaymentMethod();
                 $params = $this->getRequest()->getParams();
 
-                $result = $this->getPaymentMethod()->getpaytikotransstatus(
-                    $params["ref"]
-                );
-
+                $result = $this->getPaymentMethod()->getpaytikotransstatus( $params["ref"]);
+                $result = (object)$result;
                 $orderRef = $params["ref"];
-                //$private_key = 'h3QR26CmRyEU';
                 $private_key = \Magento\Framework\App\ObjectManager::getInstance()
                     ->get(
                         \Magento\Framework\App\Config\ScopeConfigInterface::class
@@ -43,23 +39,14 @@ class Response extends \Paytiko\Paytikopayment\Controller\PaytikoAbstract
                         \Magento\Store\Model\ScopeInterface::SCOPE_STORE
                     );
 
-                //$statusCode = $responsedecoded->statusCode;
-                //$statusDescription = $responsedecoded->statusDescription;
-                //$errorMessage = $responsedecoded->errorMessage;
 
                 $this->_resources = \Magento\Framework\App\ObjectManager::getInstance()->get(
                     "Magento\Framework\App\ResourceConnection"
                 );
                 $connection = $this->_resources->getConnection();
 
-                $sql =
-                    "Select `entity_id` from " .
-                    $this->_resources->getTableName("sales_order") .
-                    " where `paytiko_order_ref` = '" .
-                    $orderRef .
-                    "'";
+                $sql ="Select `entity_id` from " .$this->_resources->getTableName("sales_order") ." where `paytiko_order_ref` = '" . $orderRef . "'";
                 $resultid = $connection->fetchAll($sql);
-
                 $orderId = $resultid[0];
                 // $statusCode = $result->statusCode;
                 if (isset($result->statusCode)) {
@@ -76,66 +63,68 @@ class Response extends \Paytiko\Paytikopayment\Controller\PaytikoAbstract
                     $returnUrl = $this->getCheckoutHelper()->getUrl(
                         "checkout/onepage/success"
                     );
-                    // $payment = $order->getPayment();
-                    // $paymentMethod->postProcessing($order, $payment, $orderRef);
+                    
                     $this->messageManager->addSuccess(
                         __("Your payment was successful")
                     );
-                    
                 } elseif ($statusCode == 2) {
                     $returnUrl = $this->getCheckoutHelper()->getUrl(
                         "checkout/onepage/success"
                     );
-                    // $payment = $order->getPayment();
-                    // $paymentMethod->postProcessing($order, $payment, $orderRef);
+                   
                     $this->messageManager->addSuccess(
                         __("Your payment was successful")
                     );
                 } elseif ($statusCode == 3) {
+                    
+                    
                     if ($orderStatus == "complete") {
+                       
                         $returnUrl = $this->getCheckoutHelper()->getUrl(
                             "checkout/onepage/success"
                         );
-                        // $payment = $order->getPayment();
-                        // $paymentMethod->postProcessing($order, $payment, $orderRef);
+                     
                         $this->messageManager->addSuccess(
                             __("Your payment was successful")
                         );
-                        
                     } else {
+                         
                         $order->cancel()->save();
                         $this->_checkoutSession->restoreQuote();
+                        
+                        
                         $this->messageManager->addErrorMessage(
                             __(
                                 "Payment failed. Please try again or choose a different payment method"
                             )
                         );
                         $returnUrl = $this->getCheckoutHelper()->getUrl(
-                            "checkout/onepage/failure"
+                            "checkout/cart"
                         );
+                       
                     }
                 } elseif ($statusCode == 4) {
                     if ($orderStatus == "complete") {
                         $returnUrl = $this->getCheckoutHelper()->getUrl(
                             "checkout/onepage/success"
                         );
-                        // $payment = $order->getPayment();
-                        // $paymentMethod->postProcessing($order, $payment, $orderRef);
+                       
                         $this->messageManager->addSuccess(
                             __("Your payment was successful")
                         );
-                        
                     } else {
                         $order->cancel()->save();
                         $this->_checkoutSession->restoreQuote();
+                        
                         $this->messageManager->addErrorMessage(
                             __(
                                 "Payment failed. Please try again or choose a different payment method"
                             )
                         );
-                        $returnUrl = $this->getCheckoutHelper()->getUrl(
-                            "checkout/onepage/failure"
+                         $returnUrl = $this->getCheckoutHelper()->getUrl(
+                            "checkout/cart"
                         );
+                       
                     }
                 } elseif ($statusCode == 1) {
                     $returnUrl = $this->getCheckoutHelper()->getUrl(
@@ -147,14 +136,16 @@ class Response extends \Paytiko\Paytikopayment\Controller\PaytikoAbstract
                 } elseif ($statusCode == "Rejected") {
                     $order->cancel()->save();
                     $this->_checkoutSession->restoreQuote();
+                     
                     $this->messageManager->addErrorMessage(
                         __(
                             "Payment failed. Please try again or choose a different payment method"
                         )
                     );
-                    $returnUrl = $this->getCheckoutHelper()->getUrl(
-                        "checkout/onepage/failure"
+                     $returnUrl = $this->getCheckoutHelper()->getUrl(
+                        "checkout/cart"
                     );
+                  
                 } else {
                     $this->messageManager->addNotice(
                         __("Your payment was already processed")
@@ -165,12 +156,18 @@ class Response extends \Paytiko\Paytikopayment\Controller\PaytikoAbstract
                     $e,
                     $e->getMessage()
                 );
+                $returnUrl = $this->getCheckoutHelper()->getUrl(
+                        "checkout/cart"
+                    );
             } catch (\Exception $e) {
-                //$this->_checkoutSession->restoreQuote();
+                $this->_checkoutSession->restoreQuote();
                 $this->messageManager->addExceptionMessage(
                     $e,
                     __('We can\'t place the order paytiko.')
                 );
+                $returnUrl = $this->getCheckoutHelper()->getUrl(
+                        "checkout/cart"
+                    );
             }
         }
         $this->getResponse()->setRedirect($returnUrl);

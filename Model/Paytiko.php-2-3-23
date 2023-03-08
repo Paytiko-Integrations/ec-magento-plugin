@@ -57,8 +57,7 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderSender,
         \Magento\Framework\HTTP\ZendClientFactory $httpClientFactory,
         \Magento\Checkout\Model\Session $checkoutSession,
-        UrlInterface $urlBuilder,
-        \Paytiko\Paytikopayment\Helper\Paytiko $helperData
+        UrlInterface $urlBuilder
               
     ) {
         $this->helper = $helper;
@@ -66,7 +65,6 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         $this->httpClientFactory = $httpClientFactory;
         $this->checkoutSession = $checkoutSession;
         $this->urlBuilder = $urlBuilder;
-        $this->helperData = $helperData;
         
 
         parent::__construct(
@@ -146,10 +144,42 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
 
     public function getpaytikotransstatus($payment_ref){
 
-         $env = $this->getConfigData('environment');
-         $private_key = $this->getConfigData("private_key");
-         $response = $this->helperData->APIReq("/api/cashier/ecommerce/orderStatus/$payment_ref","GET","",$private_key);
-         return $response;
+      $env = $this->getConfigData('environment');
+         $params["private_key"] = $this->getConfigData("private_key");
+         $private_key = $params['private_key'];
+
+            if($env == 'sandbox'){
+            $api_url = 'https://qa-core.paytiko.com';
+            }
+            else if($env == 'live') {
+                $api_url = 'https://core.paytiko.com';
+            }
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, [
+                CURLOPT_URL => "$api_url/api/cashier/ecommerce/orderStatus/$payment_ref",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_HTTPHEADER => [
+                    "api-key: $private_key",
+                    "cache-control: no-cache",
+                ],
+            ]);
+
+            $response = curl_exec($curl);
+
+            
+
+            curl_close($curl);
+
+            $output = json_decode($response);
+
+        return $output;
     }
 
     public function buildCheckoutRequest() {
@@ -170,12 +200,12 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         $params["customerEmail"] = $order->getCustomerEmail();
         $params["customerPhone"] = $billing_address->getTelephone();
 
-        $params["cashierBaseUrl"] = $this->getConfigData("cashierBaseUrl");
-        $params["coreBaseUrl"] = $this->getConfigData("coreBaseUrl");
-        $params["embedScriptUrl"] = $this->getConfigData("embedScriptUrl");
-
         $streetaddress = implode(" ", $billing_address->getStreet());
                                     
+
+
+
+
         $appId = $params["appId"];
         $incrementedId = $params["orderId"];
         $grandtotalproduct = $params["orderAmount"];
@@ -218,12 +248,42 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         $activationkey = $params['activation_key'];
         $private_key = $params['private_key'];
 
-         $private_key = $params['private_key'];
+            if($env == 'sandbox'){
+            $api_url = 'https://qa-core.paytiko.com';
+            }
+            else if($env == 'live') {
+                $api_url = 'https://core.paytiko.com';
+            }
 
+        $curl = curl_init();
 
-        $params["cashierBaseUrl"] = $params["cashierBaseUrl"];
-          $params["coreBaseUrl"] = $params["coreBaseUrl"];
-          $params["embedScriptUrl"] = $params["embedScriptUrl"];
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => "$api_url/api/cashier/ecommerce/config/$activationkey",
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => "",
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 30,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => "GET",
+          CURLOPT_HTTPHEADER => array(
+            "api-key: $private_key",
+            "cache-control: no-cache"
+          ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+          echo "cURL Error #:" . $err;
+        } else {
+          $respons_paytiko = json_decode($response);
+          $params["cashierBaseUrl"] = $respons_paytiko->cashierBaseUrl;
+          $params["coreBaseUrl"] = $respons_paytiko->coreBaseUrl;
+          $params["embedScriptUrl"] = $respons_paytiko->embedScriptUrl;
+        }
         // Before checkout request end
 
         //checkout curl post data start
@@ -253,8 +313,21 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
             }';
 
 
-        $response = $this->helperData->APIReq("/api/cashier/ecommerce/checkout/","POST",$inputString,$private_key);
+        $url = "$api_url/api/cashier/ecommerce/checkout";
         
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true );
+        curl_setopt($ch, CURLOPT_POSTFIELDS,$inputString);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Api-Key: $private_key","Content-Type: application/json"));
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+        
+
+        $response = json_decode($response,true);
         //checkout curl post data end
         $cashierBaseUrl = $params["cashierBaseUrl"];
         $payment_base_url =    "'.$cashierBaseUrl.'?hash='";

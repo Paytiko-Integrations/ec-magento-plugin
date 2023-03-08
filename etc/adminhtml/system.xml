@@ -11,9 +11,20 @@
                 <field id="title" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Title</label>
                 </field>
-                <field id="activation_key" translate="label" type="text" sortOrder="52" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="activation_key" translate="label"  type="text" sortOrder="52" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Activation Key</label>
                 </field>
+
+                <field id="cashierBaseUrl" translate="label" type="text" sortOrder="52" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>cashierBaseUrl</label>
+                </field>
+                <field id="coreBaseUrl" translate="label" type="text" sortOrder="52" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>coreBaseUrl</label>
+                </field>
+                <field id="embedScriptUrl" translate="label" type="text" sortOrder="52" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>embedScriptUrl</label>
+                </field>
+
 
                 <field id="private_key" translate="label" type="text" sortOrder="52" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>private Key</label>

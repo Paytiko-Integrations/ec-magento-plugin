@@ -2,6 +2,6 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
 	<head>
 		<css src="Paytiko_Paytikopayment::css/paytiko.css"/>
-		<script src="https://dev-core.paytiko.com/cdn/ec/scripts/paytiko-ecommerce-sdk.1.0.js" src_type="url" />
+		<script src="Paytiko_Paytikopayment::js/paytiko_n.js" />
 	</head>
 </page>

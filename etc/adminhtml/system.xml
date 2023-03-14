@@ -30,12 +30,12 @@
                     <label>private Key</label>
                 </field>
                 <field id="check_validity" translate="label" type="button" sortOrder="53" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <frontend_model>Paytiko\Paytikopayment\Block\System\Config\HealthCheck</frontend_model>
+                    <frontend_model>Paytiko\PaytikoPayments\Block\System\Config\HealthCheck</frontend_model>
                 </field>
 
                 <field id="environment" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Payment Mode</label>
-                    <source_model>Paytiko\Paytikopayment\Model\Environment</source_model>
+                    <source_model>Paytiko\PaytikoPayments\Model\Environment</source_model>
                     <config_path>payment/paytiko/environment</config_path>
                 </field>
                 

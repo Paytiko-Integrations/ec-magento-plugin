@@ -1,8 +1,8 @@
 <?php
 
-namespace Paytiko\Paytikopayment\Controller\Standard;
+namespace Paytiko\PaytikoPayments\Controller\Standard;
 
-class Response extends \Paytiko\Paytikopayment\Controller\PaytikoAbstract
+class Response extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
 {
     public function execute()
     {

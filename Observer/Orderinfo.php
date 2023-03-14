@@ -1,10 +1,10 @@
 <?php
 
-namespace Paytiko\Paytikopayment\Observer;
+namespace Paytiko\PaytikoPayments\Observer;
 
 
 
-use Paytiko\Paytikopayment\Model\Paytiko;
+use Paytiko\PaytikoPayments\Model\Paytiko;
 
 
 

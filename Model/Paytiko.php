@@ -1,5 +1,5 @@
 <?php
-namespace Paytiko\Paytikopayment\Model;
+namespace Paytiko\PaytikoPayments\Model;
 
 use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Framework\UrlInterface;
@@ -9,7 +9,7 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
     const PAYMENT_PAYTIKO_CODE = 'paytiko';
    
 
-    protected $_template = 'Fattura24_AppFatturazione::system/config/infoLink.phtml';
+    protected $_template = 'Paytiko_PaytikoPayments::system/config/infoLink.phtml';
 
     protected $_code = self::PAYMENT_PAYTIKO_CODE;
 
@@ -53,12 +53,12 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         \Magento\Payment\Helper\Data $paymentData,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Payment\Model\Method\Logger $logger,
-        \Paytiko\Paytikopayment\Helper\Paytiko $helper,
+        \Paytiko\PaytikoPayments\Helper\Paytiko $helper,
         \Magento\Sales\Model\Order\Email\Sender\OrderSender $orderSender,
         \Magento\Framework\HTTP\ZendClientFactory $httpClientFactory,
         \Magento\Checkout\Model\Session $checkoutSession,
         UrlInterface $urlBuilder,
-        \Paytiko\Paytikopayment\Helper\Paytiko $helperData
+        \Paytiko\PaytikoPayments\Helper\Paytiko $helperData
               
     ) {
         $this->helper = $helper;

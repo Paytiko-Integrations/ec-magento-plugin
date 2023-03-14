@@ -5,7 +5,7 @@ define([
     'use strict';
     renderList.push({
         type : 'paytiko',
-        component : 'Paytiko_Paytikopayment/js/view/payment/method-renderer/paytiko-method'
+        component : 'Paytiko_PaytikoPayments/js/view/payment/method-renderer/paytiko-method'
     });
 
     return Component.extend({});

@@ -5,7 +5,7 @@ define(
         'Magento_Customer/js/customer-data',
         'Magento_Customer/js/model/customer',
         'Magento_Checkout/js/model/full-screen-loader',
-        'Paytiko_Paytikopayment/js/form/form-builder',
+        'Paytiko_PaytikoPayments/js/form/form-builder',
         'Magento_Ui/js/modal/alert',
         'Magento_Ui/js/modal/modal'
     ],

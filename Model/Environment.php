@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Paytiko\Paytikopayment\Model;
+namespace Paytiko\PaytikoPayments\Model;
 
 
 class Environment implements \Magento\Framework\Option\ArrayInterface

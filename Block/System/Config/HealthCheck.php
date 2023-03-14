@@ -1,6 +1,6 @@
 <?php
 
-namespace Paytiko\Paytikopayment\Block\System\Config;
+namespace Paytiko\PaytikoPayments\Block\System\Config;
 
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
@@ -17,7 +17,7 @@ class HealthCheck extends Field
     /**
      * @var string
      */
-    protected $_template = 'Paytiko_Paytikopayment::system/config/check_credential_button.phtml';
+    protected $_template = 'Paytiko_PaytikoPayments::system/config/check_credential_button.phtml';
 
     public function render(AbstractElement $element)
     {
@@ -28,9 +28,9 @@ class HealthCheck extends Field
     public function getStatusLabel($statusLevel = null)
     {
         $statusList = [
-            \Paytiko\Paytikopayment\Model\Config\HealthCheck::STATUS_SUCCESS => __('Success'),
-            \Paytiko\Paytikopayment\Model\Config\HealthCheck::STATUS_WARNING => __('Warning'),
-            \Paytiko\Paytikopayment\Model\Config\HealthCheck::STATUS_ERROR => __('Error')
+            \Paytiko\PaytikoPayments\Model\Config\HealthCheck::STATUS_SUCCESS => __('Success'),
+            \Paytiko\PaytikoPayments\Model\Config\HealthCheck::STATUS_WARNING => __('Warning'),
+            \Paytiko\PaytikoPayments\Model\Config\HealthCheck::STATUS_ERROR => __('Error')
         ];
 
         return ($statusLevel !== null && isset($statusList[$statusLevel])) ? $statusList[$statusLevel] : null;
@@ -43,7 +43,7 @@ class HealthCheck extends Field
      */
     public function getAjaxHealthCheckUrl()
     {
-        return $this->getUrl('paytikopayment/healthcheck', ['_current' => true]);
+        return $this->getUrl('paytikopayments/healthcheck', ['_current' => true]);
     }
 
     protected function _getElementHtml(AbstractElement $element)

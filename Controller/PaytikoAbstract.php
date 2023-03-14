@@ -1,5 +1,5 @@
 <?php
-namespace Paytiko\Paytikopayment\Controller;
+namespace Paytiko\PaytikoPayments\Controller;
 
 use Magento\Framework\Controller\ResultFactory;
 
@@ -107,9 +107,9 @@ abstract class PaytikoAbstract extends Action implements
 
         \Psr\Log\LoggerInterface $logger,
 
-        \Paytiko\Paytikopayment\Model\Paytiko $paymentMethod,
+        \Paytiko\PaytikoPayments\Model\Paytiko $paymentMethod,
 
-        \Paytiko\Paytikopayment\Helper\Paytiko $checkoutHelper,
+        \Paytiko\PaytikoPayments\Helper\Paytiko $checkoutHelper,
 
         \Magento\Quote\Api\CartManagementInterface $cartManagement,
 

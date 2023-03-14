@@ -4,7 +4,7 @@
     <default>
         <payment>
             <paytiko>
-                <model>Paytiko\Paytikopayment\Model\Paytiko</model>
+                <model>Paytiko\PaytikoPayments\Model\Paytiko</model>
                 <title>PaytikoGateway</title>
                 <redirect_url>paytiko/standard/redirect</redirect_url>
                 <return_url>paytiko/standard/response</return_url>

@@ -1,6 +1,6 @@
 <?php
 
-namespace Paytiko\Paytikopayment\Helper;
+namespace Paytiko\PaytikoPayments\Helper;
 
 use Magento\Framework\App\Helper\Context;
 use Magento\Sales\Model\Order;

@@ -18,7 +18,7 @@
                                                             <!-- merge payment method renders here -->
                                                             <item name="children" xsi:type="array">
                                                                 <item name="paytiko-payments" xsi:type="array">
-                                                                    <item name="component" xsi:type="string">Paytiko_Paytikopayment/js/view/payment/paytiko-payment</item>
+                                                                    <item name="component" xsi:type="string">Paytiko_PaytikoPayments/js/view/payment/paytiko-payments</item>
                                                                     <item name="methods" xsi:type="array">
                                                                         <item name="paytiko" xsi:type="array">
                                                                             <item name="isBillingAddressRequired" xsi:type="boolean">true</item>

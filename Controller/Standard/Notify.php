@@ -1,7 +1,7 @@
 <?php
-namespace Paytiko\Paytikopayment\Controller\Standard;
+namespace Paytiko\PaytikoPayments\Controller\Standard;
 
-class Notify extends \Paytiko\Paytikopayment\Controller\PaytikoAbstract
+class Notify extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
 {
     public function execute()
     {

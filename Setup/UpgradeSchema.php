@@ -1,6 +1,6 @@
 <?php
 
-namespace Paytiko\Paytikopayment\Setup;
+namespace Paytiko\PaytikoPayments\Setup;
 
 use Magento\Framework\Setup\UpgradeSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Paytiko\Paytikopayment\Model;
+namespace Paytiko\PaytikoPayments\Model;
 
 class ConfigProvider implements \Magento\Checkout\Model\ConfigProviderInterface
 {
-    protected $methodCode = \Paytiko\Paytikopayment\Model\Paytiko::PAYMENT_PAYTIKO_CODE;
+    protected $methodCode = \Paytiko\PaytikoPayments\Model\Paytiko::PAYMENT_PAYTIKO_CODE;
     
     
     protected $method;

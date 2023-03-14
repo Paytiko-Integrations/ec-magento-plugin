@@ -4,4 +4,4 @@
  */
 
 use \Magento\Framework\Component\ComponentRegistrar;
-ComponentRegistrar::register(ComponentRegistrar::MODULE,'Paytiko_Paytikopayment',__DIR__);
+ComponentRegistrar::register(ComponentRegistrar::MODULE,'Paytiko_PaytikoPayments',__DIR__);

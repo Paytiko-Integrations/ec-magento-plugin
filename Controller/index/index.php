@@ -1,5 +1,5 @@
 <?php
-namespace Paytiko\Paytikopayment\Controller\Index;
+namespace Paytiko\PaytikoPayments\Controller\Index;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\Action\Context;
 
@@ -11,7 +11,7 @@ class Index extends \Magento\Framework\App\Action\Action
 	public function __construct(
 		\Magento\Framework\App\Action\Context $context,
 		\Magento\Framework\View\Result\PageFactory $pageFactory,
-		\Paytiko\Paytikopayment\Helper\Paytiko $helperData)
+		\Paytiko\PaytikoPayments\Helper\Paytiko $helperData)
 	{
 		$this->_pageFactory = $pageFactory;
 		$this->helperData = $helperData;

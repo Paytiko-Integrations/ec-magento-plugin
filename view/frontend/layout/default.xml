@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
 	<head>
-		<css src="Paytiko_Paytikopayment::css/paytiko.css"/>
-		<script src="Paytiko_Paytikopayment::js/paytiko_n.js" />
+		<css src="Paytiko_PaytikoPayments::css/paytiko.css"/>
+		<script src="Paytiko_PaytikoPayments::js/paytiko_n.js" />
 	</head>
 </page>

@@ -1,5 +1,5 @@
 {
-    "name": "Paytiko/Paytikopayment",
+    "name": "Paytiko/PaytikoPayments",
     "description": "payment gateway extension for magento by Paytiko",
     "require": {
         "magento/framework": "~100.0||~101.0",
@@ -27,7 +27,7 @@
     "autoload": {
         "files": [ "registration.php" ],
         "psr-4": {
-            "Paytiko\\Paytikopayment\\": ""
+            "Paytiko\\PaytikoPayments\\": ""
         }
     }
 }

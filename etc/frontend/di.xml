@@ -5,7 +5,7 @@ ObjectManager/etc/config.xsd">
     <type name="Magento\Checkout\Model\CompositeConfigProvider">
         <arguments>
             <argument name="configProviders" xsi:type="array">
-                <item name="paytiko_config_provider" xsi:type="object">Paytiko\Paytikopayment\Model\ConfigProvider</item>
+                <item name="paytiko_config_provider" xsi:type="object">Paytiko\PaytikoPayments\Model\ConfigProvider</item>
             </argument>
         </arguments>
     </type>

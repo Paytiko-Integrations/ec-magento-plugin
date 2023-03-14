@@ -158,33 +158,33 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         $order = $this->checkoutSession->getLastRealOrder();
         $billingAddress = $order->getBillingAddress();
 
-        $params = array();
-        $params["appId"] = $this->getConfigData("app_id");
-        $params["activation_key"] = $this->getConfigData("activation_key");
-        $params["private_key"] = $this->getConfigData("private_key");
-        $params["orderId"] = $order->getIncrementId();
-        $params["orderAmount"] = round($order->getGrandTotal(), 2);
-        $params["orderCurrency"] = $order->getOrderCurrencyCode();
-        $params["customerName"] = $billingAddress->getFirstName(). " ". $billingAddress->getLastName();
-        $params["customerEmail"] = $order->getCustomerEmail();
-        $params["customerPhone"] = $billingAddress->getTelephone();
+        $params = [
+            'appId' => $this->getConfigData('app_id'),
+            'activation_key' => $this->getConfigData('activation_key'),
+            'private_key' => $this->getConfigData('private_key'),
+            'orderId' => $order->getIncrementId(),
+            'orderAmount' => round($order->getGrandTotal(), 2),
+            'orderCurrency' => $order->getOrderCurrencyCode(),
+            'customerName' => $billingAddress->getFirstName(). " ". $billingAddress->getLastName(),
+            'customerEmail' => $order->getCustomerEmail(),
+            'customerPhone' => $billingAddress->getTelephone(),
+            'cashierBaseUrl' => $this->getConfigData('cashierBaseUrl'),
+            'coreBaseUrl' => $this->getConfigData('coreBaseUrl'),
+            'embedScriptUrl' => $this->getConfigData('embedScriptUrl')
+        ];
 
-        $params["cashierBaseUrl"] = $this->getConfigData("cashierBaseUrl");
-        $params["coreBaseUrl"] = $this->getConfigData("coreBaseUrl");
-        $params["embedScriptUrl"] = $this->getConfigData("embedScriptUrl");
-
-//        $product_data = '';
-//        foreach ($order->getAllItems() as $item) {
-//          $product_name = $item->getName();
-//          $product_id = $item->getProductId();
-//          $price = number_format($item->getPrice(), 2);
-//          $quantity = round($item->getQtyOrdered());
-//          //$tax = number_format($item->getBaseTaxAmount(), 2);
-//          $tax = number_format($item->getTaxAmount(), 2);
-//          $subtotal = number_format($item->getBaseRowTotal(), 2);
-//          $subtotalamount = $tax + $subtotal;
-//          $product_data .= '{"name":"'.$product_name.'","itemId":"'.$product_id.'","quantity":"'.$quantity.'","cost":"'.$price.'","price":"'.$price.'", "tax":"'.$tax.'", "variation_id":0, "subtotal":"'.$subtotalamount.'", "total":"'.$subtotalamount.'" },';
-//        }
+/*      $product_data = '';
+        foreach ($order->getAllItems() as $item) {
+          $product_name = $item->getName();
+          $product_id = $item->getProductId();
+          $price = number_format($item->getPrice(), 2);
+          $quantity = round($item->getQtyOrdered());
+          //$tax = number_format($item->getBaseTaxAmount(), 2);
+          $tax = number_format($item->getTaxAmount(), 2);
+          $subtotal = number_format($item->getBaseRowTotal(), 2);
+          $subtotalamount = $tax + $subtotal;
+          $product_data .= '{"name":"'.$product_name.'","itemId":"'.$product_id.'","quantity":"'.$quantity.'","cost":"'.$price.'","price":"'.$price.'", "tax":"'.$tax.'", "variation_id":0, "subtotal":"'.$subtotalamount.'", "total":"'.$subtotalamount.'" },';
+        }*/
 
         $invoiceId = "M2-{$params["orderId"]}-{$timestamp}";
         $data = [

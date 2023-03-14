@@ -156,8 +156,7 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         $env = $this->getConfigData('environment');
         $timestamp = time();
         $order = $this->checkoutSession->getLastRealOrder();
-
-        $billing_address = $order->getBillingAddress();
+        $billingAddress = $order->getBillingAddress();
 
         $params = array();
         $params["appId"] = $this->getConfigData("app_id");
@@ -166,94 +165,49 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         $params["orderId"] = $order->getIncrementId();
         $params["orderAmount"] = round($order->getGrandTotal(), 2);
         $params["orderCurrency"] = $order->getOrderCurrencyCode();
-        $params["customerName"] = $billing_address->getFirstName(). " ". $billing_address->getLastName();
+        $params["customerName"] = $billingAddress->getFirstName(). " ". $billingAddress->getLastName();
         $params["customerEmail"] = $order->getCustomerEmail();
-        $params["customerPhone"] = $billing_address->getTelephone();
+        $params["customerPhone"] = $billingAddress->getTelephone();
 
         $params["cashierBaseUrl"] = $this->getConfigData("cashierBaseUrl");
         $params["coreBaseUrl"] = $this->getConfigData("coreBaseUrl");
         $params["embedScriptUrl"] = $this->getConfigData("embedScriptUrl");
 
-        $streetaddress = implode(" ", $billing_address->getStreet());
-                                    
-        $appId = $params["appId"];
-        $incrementedId = $params["orderId"];
-        $grandtotalproduct = $params["orderAmount"];
-        
-        $basegrandtotals  = number_format($order->getBaseGrandTotal(), 2);
-        $productTotal = round($order->getBaseSubtotal());
-        $totalshippamount = number_format($order->getBaseShippingAmount(), 2);
-        $TotalTaxAmount = number_format($order->getTaxAmount(), 2);
+//        $product_data = '';
+//        foreach ($order->getAllItems() as $item) {
+//          $product_name = $item->getName();
+//          $product_id = $item->getProductId();
+//          $price = number_format($item->getPrice(), 2);
+//          $quantity = round($item->getQtyOrdered());
+//          //$tax = number_format($item->getBaseTaxAmount(), 2);
+//          $tax = number_format($item->getTaxAmount(), 2);
+//          $subtotal = number_format($item->getBaseRowTotal(), 2);
+//          $subtotalamount = $tax + $subtotal;
+//          $product_data .= '{"name":"'.$product_name.'","itemId":"'.$product_id.'","quantity":"'.$quantity.'","cost":"'.$price.'","price":"'.$price.'", "tax":"'.$tax.'", "variation_id":0, "subtotal":"'.$subtotalamount.'", "total":"'.$subtotalamount.'" },';
+//        }
 
-
-        $totalshiptaxprice = $TotalTaxAmount + $basegrandtotals;
-
-        $totalshiptaxprice = number_format($totalshiptaxprice, 2);
-
-        $product_data = '';
-        foreach ($order->getAllItems() as $item) {
-          $product_name = $item->getName();
-          $product_id = $item->getProductId();
-          $price = number_format($item->getPrice(), 2);
-          $quantity = round($item->getQtyOrdered());
-          //$tax = number_format($item->getBaseTaxAmount(), 2);
-          $tax = number_format($item->getTaxAmount(), 2);
-          $subtotal = number_format($item->getBaseRowTotal(), 2);
-          $subtotalamount = $tax + $subtotal;
-          $product_data .= '{"name":"'.$product_name.'","itemId":"'.$product_id.'","quantity":"'.$quantity.'","cost":"'.$price.'","price":"'.$price.'", "tax":"'.$tax.'", "variation_id":0, "subtotal":"'.$subtotalamount.'", "total":"'.$subtotalamount.'" },';
-        }
-
-        $invoice_number = "M2-".$incrementedId."-".$timestamp;
-
-        if($order->getCustomerId()){
-        $uniqueIndentifier = "M2-".$order->getCustomerId();
-        }else{
-            $uniqueIndentifier = "M2-G-".$timestamp;
-        }
-
-       
-
-        // Before checkout request start
-
-        $activationkey = $params['activation_key'];
-        $private_key = $params['private_key'];
-
-         $private_key = $params['private_key'];
-
-
-        $params["cashierBaseUrl"] = $params["cashierBaseUrl"];
-          $params["coreBaseUrl"] = $params["coreBaseUrl"];
-          $params["embedScriptUrl"] = $params["embedScriptUrl"];
-        // Before checkout request end
-
-        //checkout curl post data start
-        $totalPrice = $totalshiptaxprice * 100;
-        $inputString =  '{
-            "amount": "'.$totalPrice.'",
-            "currency": "'.$order->getOrderCurrencyCode().'",
-            "orderId": "'.$invoice_number.'",
-            "redirectUrl": "'.$this->getReturnUrl().'?ref='.$invoice_number.'",
-            "FailedRedirectUrl": "'.$this->getReturnUrl().'?ref='.$invoice_number.'",
-            "SuccessRedirectUrl": "'.$this->getReturnUrl().'?ref='.$invoice_number.'",
-            "webhookUrl": "'.$this->getNotifyUrl().'",
-            "billingDetails":
-             {
-            "uniqueIdentifier": "'.$uniqueIndentifier.'",
-            "firstName": "'.$billing_address->getFirstName().'",
-            "lastName": "'.$billing_address->getLastName().'",
-            "email": "'.$order->getCustomerEmail().'",
-            "street": "'.$streetaddress.'",
-            "region": "'.$billing_address->getRegion().'",
-            "city": "'.$billing_address->getCity().'",
-            "phone": "'.$billing_address->getTelephone().'",
-            "zipCode": "'.$billing_address->getPostcode().'",
-            "country": "'.$billing_address->getCountryId().'",
-            "dateOfBirth": "1990-03-15"
-             }
-            }';
-
-
-        $response = $this->helperData->APIReq("/api/cashier/ecommerce/checkout/","POST",$inputString,$private_key);
+        $invoiceId = "M2-{$params["orderId"]}-{$timestamp}";
+        $data = [
+            'amount' => (int)($order->getTaxAmount() + $order->getBaseGrandTotal() * 100),
+            'currency' => $order->getOrderCurrencyCode(),
+            'orderId' => $invoiceId,
+            'successRedirectUrl' => $this->getReturnUrl().'?ref='.$invoiceId,
+            'failedRedirectUrl' => $this->getReturnUrl().'?ref='.$invoiceId,
+            'webhookUrl' => $this->getNotifyUrl(),
+            'billingDetails' => [
+                'uniqueIdentifier' => $order->getCustomerId() ? "M2-".$order->getCustomerId() : "M2-G-".$timestamp,
+                'firstName' => $billingAddress->getFirstName(),
+                'lastName' => $billingAddress->getLastName(),
+                'email' => $order->getCustomerEmail(),
+                'phone' => str_replace(['-', ' '], '', $billingAddress->getTelephone()),
+                'street' => implode(' ', $billingAddress->getStreet()),
+                'region' => $billingAddress->getRegion(),
+                'city' => $billingAddress->getCity(),
+                'zipCode' => $billingAddress->getPostcode(),
+                'country' => $billingAddress->getCountryId()
+            ]
+        ];
+        $response = $this->helperData->APIReq("/api/cashier/ecommerce/checkout/","POST", json_encode($data), $params['private_key']);
         
         //checkout curl post data end
         $cashierBaseUrl = $params["cashierBaseUrl"];
@@ -261,12 +215,9 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
 
         $params["urlparam"] = $payment_base_url;
         $params["token_val"] = $response['cashierSessionToken'];
-
         $params["url"] = $params["urlparam"].$params["token_val"];
-
-         $params["orderReference"] = $invoice_number;
-
-         $params["mola_inc_id"] = $invoice_number;
+        $params["orderReference"] = $invoiceId;
+        $params["mola_inc_id"] = $invoiceId;
 
         return $params;
     }

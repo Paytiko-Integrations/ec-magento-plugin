@@ -1,120 +1,98 @@
 <?php
+
 namespace Paytiko\PaytikoPayments\Controller;
 
-use Magento\Framework\Controller\ResultFactory;
-
 use Magento\Framework\App\Action\Action;
-
 use Magento\Framework\App\CsrfAwareActionInterface;
-
 use Magento\Framework\App\Request\InvalidRequestException;
-
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Controller\ResultFactory;
 
 abstract class PaytikoAbstract extends Action implements
     CsrfAwareActionInterface
 {
     /**
-
      * @var \Magento\Checkout\Model\Session
-
      */
 
     protected $_checkoutSession;
 
     /**
-
      * @var \Magento\Sales\Model\OrderFactory
-
      */
 
     protected $_orderFactory;
 
     /**
-
      * @var \Magento\Customer\Model\Session
-
      */
 
     protected $_customerSession;
 
     /**
-
      * @var \Magento\Quote\Api\CartRepositoryInterface
-
      */
 
     protected $quoteRepository;
 
     /**
-
      * @var \Psr\Log\LoggerInterface
-
      */
 
     protected $_logger;
 
     /**
-
      * @var \Magento\Quote\Model\Quote
-
      */
 
     protected $_quote;
 
     /**
-
      * @var \Tco\Checkout\Model\Checkout
-
      */
 
     protected $_paymentMethod;
 
     /**
-
      * @var \Tco\Checkout\Helper\Checkout
-
      */
 
     protected $_checkoutHelper;
 
     /**
-
      * @var \Magento\Quote\Api\CartManagementInterface
-
      */
 
     protected $cartManagement;
 
     /**
-
      * @var \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
-
      */
 
     protected $resultJsonFactory;
 
     public function __construct(
-        \Magento\Framework\App\Action\Context $context,
+        \Magento\Framework\App\Action\Context            $context,
 
-        \Magento\Customer\Model\Session $customerSession,
+        \Magento\Customer\Model\Session                  $customerSession,
 
-        \Magento\Checkout\Model\Session $checkoutSession,
+        \Magento\Checkout\Model\Session                  $checkoutSession,
 
-        \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
+        \Magento\Quote\Api\CartRepositoryInterface       $quoteRepository,
 
-        \Magento\Sales\Model\OrderFactory $orderFactory,
+        \Magento\Sales\Model\OrderFactory                $orderFactory,
 
-        \Psr\Log\LoggerInterface $logger,
+        \Psr\Log\LoggerInterface                         $logger,
 
-        \Paytiko\PaytikoPayments\Model\Paytiko $paymentMethod,
+        \Paytiko\PaytikoPayments\Model\Paytiko           $paymentMethod,
 
-        \Paytiko\PaytikoPayments\Helper\Paytiko $checkoutHelper,
+        \Paytiko\PaytikoPayments\Helper\Paytiko          $checkoutHelper,
 
-        \Magento\Quote\Api\CartManagementInterface $cartManagement,
+        \Magento\Quote\Api\CartManagementInterface       $cartManagement,
 
         \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
-    ) {
+    )
+    {
         $this->_customerSession = $customerSession;
 
         $this->_checkoutSession = $checkoutSession;
@@ -136,16 +114,37 @@ abstract class PaytikoAbstract extends Action implements
         parent::__construct($context);
     }
 
+    public function getCustomerSession()
+    {
+        return $this->_customerSession;
+    }
+
+    public function getPaymentMethod()
+    {
+        return $this->_paymentMethod;
+    }
+
+    public function createCsrfValidationException(
+        RequestInterface $request
+    ): ?InvalidRequestException
+    {
+        return null;
+    }
+
     /**
+     * @inheritDoc
+     */
 
+    public function validateForCsrf(RequestInterface $request): ?bool
+    {
+        return true;
+    }
+
+    /**
      * Instantiate quote and checkout
-
      *
-
      * @return void
-
      * @throws \Magento\Framework\Exception\LocalizedException
-
      */
 
     protected function initCheckout()
@@ -161,16 +160,25 @@ abstract class PaytikoAbstract extends Action implements
         }
     }
 
+    protected function getQuote()
+    {
+        if (!$this->_quote) {
+            $this->_quote = $this->getCheckoutSession()->getQuote();
+        }
+
+        return $this->_quote;
+    }
+
+    protected function getCheckoutSession()
+    {
+        return $this->_checkoutSession;
+    }
+
     /**
-
      * Cancel order, return quote to customer
-
      *
-
      * @param string $errorMsg
-
      * @return false|string
-
      */
 
     protected function _cancelPayment($errorMsg = "")
@@ -189,13 +197,9 @@ abstract class PaytikoAbstract extends Action implements
     }
 
     /**
-
      * Get order object
-
      *
-
      * @return \Magento\Sales\Model\Order
-
      */
 
     protected function getOrderById($order_id)
@@ -210,13 +214,9 @@ abstract class PaytikoAbstract extends Action implements
     }
 
     /**
-
      * Get order object
-
      *
-
      * @return \Magento\Sales\Model\Order
-
      */
 
     protected function getOrder()
@@ -226,49 +226,8 @@ abstract class PaytikoAbstract extends Action implements
             ->loadByIncrementId($this->_checkoutSession->getLastRealOrderId());
     }
 
-    protected function getQuote()
-    {
-        if (!$this->_quote) {
-            $this->_quote = $this->getCheckoutSession()->getQuote();
-        }
-
-        return $this->_quote;
-    }
-
-    protected function getCheckoutSession()
-    {
-        return $this->_checkoutSession;
-    }
-
-    public function getCustomerSession()
-    {
-        return $this->_customerSession;
-    }
-
-    public function getPaymentMethod()
-    {
-        return $this->_paymentMethod;
-    }
-
     protected function getCheckoutHelper()
     {
         return $this->_checkoutHelper;
-    }
-
-    public function createCsrfValidationException(
-        RequestInterface $request
-    ): ?InvalidRequestException {
-        return null;
-    }
-
-    /**
-
-     * @inheritDoc
-
-     */
-
-    public function validateForCsrf(RequestInterface $request): ?bool
-    {
-        return true;
     }
 }

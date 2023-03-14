@@ -2,9 +2,12 @@
 
 namespace Paytiko\PaytikoPayments\Helper;
 
+use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Sales\Model\Order;
-use Magento\Framework\App\Helper\AbstractHelper;
+
+const PROD_BASE_URL    = 'https://core.paytiko.com/api/cashier/ecommerce/';
+const SANDBOX_BASE_URL = 'https://qa-core.paytiko.com/api/cashier/ecommerce/';
 
 class Paytiko extends AbstractHelper
 {
@@ -14,11 +17,12 @@ class Paytiko extends AbstractHelper
     protected $orderSender;
 
     public function __construct(
-        Context $context,
-        \Magento\Checkout\Model\Session $session,
-        \Magento\Quote\Model\Quote $quote,
+        Context                              $context,
+        \Magento\Checkout\Model\Session      $session,
+        \Magento\Quote\Model\Quote           $quote,
         \Magento\Quote\Model\QuoteManagement $quoteManagement
-    ) {
+    )
+    {
         $this->session = $session;
         $this->quote = $quote;
         $this->quoteManagement = $quoteManagement;
@@ -45,38 +49,19 @@ class Paytiko extends AbstractHelper
         return $this->_getUrl($route, $params);
     }
 
-    
-    // -- function for get environment --
-    public function baseurlpaytiko(){
-        // $env = $this->getConfigData('environment');
-    
-   $env = \Magento\Framework\App\ObjectManager::getInstance()
-    ->get(\Magento\Framework\App\Config\ScopeConfigInterface::class)
-    ->getValue(
-        'payment/paytiko/environment',
-        \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-    );
-       
-         if($env == 'sandbox'){
-            $api_url = 'https://qa-core.paytiko.com';
-         }
-         else if($env == 'live') {
-            $api_url = 'https://core.paytiko.com';
-         } 
-         return $api_url;
-    }
-    
-    // -- function for api send call start --
-    public function APIReq($path, $method, $data, $apiKey = null)
+
+    public function APIReq($path, $method, $data, $apiKey = null, $env=null)
     {
-        $baseUrl = $this->baseurlpaytiko();
-        return $this->send("{$baseUrl}{$path}",$method,$data,$apiKey ?: $this->apiKey );
-    }
-    
-    public function APIReqcheckconfig($baseUrl,$path, $method, $data, $apiKey = null)
-    {
-        
-        return $this->send("{$baseUrl}{$path}",$method,$data,$apiKey ?: $this->apiKey );
+        if ($env===null) {
+            $env = \Magento\Framework\App\ObjectManager::getInstance()
+                ->get(\Magento\Framework\App\Config\ScopeConfigInterface::class)
+                ->getValue(
+                    'payment/paytiko/environment',
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+                );
+        }
+        $baseUrl = ($env === 'live' ? PROD_BASE_URL : SANDBOX_BASE_URL);
+        return $this->send("{$baseUrl}{$path}", $method, $data, $apiKey ?: $this->apiKey);
     }
 
     public function send($url, $method, $data = "", $apiKey = null)
@@ -106,11 +91,14 @@ class Paytiko extends AbstractHelper
         }
         curl_close($ch);
         $resp = json_decode($result, true);
-        if ($resp === null) {
+        if ($resp === null || json_last_error()) {
             throw new \Exception("Error: server sent an unexpected response");
         }
         return $resp ?: [];
     }
 
-    // -- function for api send call end --
+    public function APIReqActivation($env, $apiKey, $activationKey)
+    {
+        return $this->APIReq("config/{$activationKey}", 'get', '', $apiKey, $env);
+    }
 }

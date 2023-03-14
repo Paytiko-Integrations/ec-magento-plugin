@@ -20,11 +20,11 @@ class Environment implements \Magento\Framework\Option\ArrayInterface
         return [
             [
                 'value' => 'live',
-                'label' => 'live'
+                'label' => 'Live'
             ],
             [
                 'value' => 'sandbox',
-                'label' => 'sandbox'
+                'label' => 'Sandbox'
             ]
         ];
     }

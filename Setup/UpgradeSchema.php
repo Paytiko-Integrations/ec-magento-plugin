@@ -25,7 +25,7 @@ class UpgradeSchema implements  UpgradeSchemaInterface
 									'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
 									'nullable' => false,
 									'comment' => 'Is placed by Paytiko',
-									'default' => 0
+				//					'default' => 0
 								];
 
 				$connection = $setup->getConnection();

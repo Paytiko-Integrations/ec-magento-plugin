@@ -148,7 +148,7 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
 
          $env = $this->getConfigData('environment');
          $private_key = $this->getConfigData("private_key");
-         $response = $this->helperData->APIReq("/api/cashier/ecommerce/orderStatus/$payment_ref","GET","",$private_key);
+         $response = $this->helperData->APIReq("orderStatus/$payment_ref","GET","",$private_key);
          return $response;
     }
 
@@ -207,7 +207,7 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
                 'country' => $billingAddress->getCountryId()
             ]
         ];
-        $response = $this->helperData->APIReq("/api/cashier/ecommerce/checkout/","POST", json_encode($data), $params['private_key']);
+        $response = $this->helperData->APIReq("checkout/","POST", json_encode($data), $params['private_key']);
         
         //checkout curl post data end
         $cashierBaseUrl = $params["cashierBaseUrl"];
@@ -232,10 +232,10 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         $order = $this->checkoutSession->getLastRealOrder();
         $orderId = $order->getIncrementId();
 
-        $sql = "Update " . $this->_resources->getTableName('sales_order') . " Set `paytiko_order_ref` ='".$response["orderReference"]."' where `increment_id` = ".$orderId;
+        $sql = "UPDATE {$this->_resources->getTableName('sales_order')} SET `paytiko_order_ref`='{$response["orderReference"]}' WHERE `increment_id`={$orderId}";
         $connection->query($sql);
 
-        $sql = "Update " . $this->_resources->getTableName('sales_order') . " Set `paytiko_order_id` ='".$response["mola_inc_id"]."' where `increment_id` = ".$orderId;
+        $sql = "UPDATE " . $this->_resources->getTableName('sales_order') . " Set `paytiko_order_id` ='".$response["mola_inc_id"]."' where `increment_id` = ".$orderId;
         $connection->query($sql);
     }
 

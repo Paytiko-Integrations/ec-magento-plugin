@@ -145,7 +145,6 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
     }
 
     public function getpaytikotransstatus($payment_ref){
-
          $env = $this->getConfigData('environment');
          $private_key = $this->getConfigData("private_key");
          $response = $this->helperData->APIReq("orderStatus/$payment_ref","GET","",$private_key);

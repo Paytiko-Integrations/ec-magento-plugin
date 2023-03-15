@@ -26,7 +26,7 @@ define(
                     top:parseInt(pos.top - $(window).scrollTop() - 12) + 'px'
                 });
             }
-            let handleScrLoad = () => {
+            let handleScrLoad = (resp) => {
                 fullScreenLoader.stopLoader();
                 customerData.invalidate(['cart']);
 

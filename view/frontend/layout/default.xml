@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
 	<head>
+		<meta http-equiv="Content-Security-Policy" content="Content-Security-Policy: base-uri 'self'; default-src; script-src https://*.paytiko.com;" />
 		<css src="Paytiko_PaytikoPayments::css/paytiko.css"/>
 		<!-- script src="Paytiko_PaytikoPayments::js/paytiko_n.js" /-->
 	</head>

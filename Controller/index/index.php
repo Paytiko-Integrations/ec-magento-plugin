@@ -54,6 +54,10 @@ class Index extends \Magento\Framework\App\Action\Action
             return;
         }
 
+        \Magento\Framework\App\ObjectManager::getInstance()
+            ->get(\Psr\Log\LoggerInterface::class)
+            ->debug($response);
+
         echo json_encode(array_merge(['status' => 'fail', 'message' => 'Something went wrong. Check your input or contact support.'], $response));
     }
 }

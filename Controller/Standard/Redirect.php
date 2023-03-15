@@ -65,9 +65,7 @@ class Redirect extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
         $quote->save();
 
         $paymentMethod = $this->getPaymentMethod();
-        $params = [];
         $params = $this->getPaymentMethod()->buildCheckoutRequest();
-        $params["url"] = $params["url"];
         $order = $this->getOrder();
         $orderStatus = $order->getStatus();
         $payment = $order->getPayment();

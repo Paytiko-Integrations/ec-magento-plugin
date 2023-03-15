@@ -30,14 +30,9 @@ class Response extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
                 $result = $this->getPaymentMethod()->getpaytikotransstatus( $params["ref"]);
                 $result = (object)$result;
                 $orderRef = $params["ref"];
-                $private_key = \Magento\Framework\App\ObjectManager::getInstance()
-                    ->get(
-                        \Magento\Framework\App\Config\ScopeConfigInterface::class
-                    )
-                    ->getValue(
-                        "payment/paytiko/private_key",
-                        \Magento\Store\Model\ScopeInterface::SCOPE_STORE
-                    );
+                $apiKey = \Magento\Framework\App\ObjectManager::getInstance()
+                    ->get(\Magento\Framework\App\Config\ScopeConfigInterface::class)
+                    ->getValue("payment/paytiko/api_key", \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
 
                 $this->_resources = \Magento\Framework\App\ObjectManager::getInstance()->get(

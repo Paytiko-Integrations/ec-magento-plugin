@@ -26,8 +26,8 @@
                 </field>
 
 
-                <field id="private_key" translate="label" type="text" sortOrder="52" showInDefault="1" showInWebsite="1" showInStore="0">
-                    <label>private Key</label>
+                <field id="api_key" translate="label" type="text" sortOrder="52" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>API Key</label>
                 </field>
                 <field id="check_validity" translate="label" type="button" sortOrder="53" showInDefault="1" showInWebsite="1" showInStore="1">
                     <frontend_model>Paytiko\PaytikoPayments\Block\System\Config\HealthCheck</frontend_model>

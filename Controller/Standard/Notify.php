@@ -15,7 +15,7 @@ class Notify extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
         $apiKey = \Magento\Framework\App\ObjectManager::getInstance()
             ->get(\Magento\Framework\App\Config\ScopeConfigInterface::class)
             ->getValue(
-                "payment/paytiko/private_key",
+                "payment/paytiko/api_key",
                 \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             );
 

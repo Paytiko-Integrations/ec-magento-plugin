@@ -145,9 +145,8 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
     }
 
     public function getpaytikotransstatus($payment_ref){
-         $env = $this->getConfigData('environment');
-         $private_key = $this->getConfigData("private_key");
-         $response = $this->helperData->APIReq("orderStatus/$payment_ref","GET","",$private_key);
+         $apiKey = $this->getConfigData("api_key");
+         $response = $this->helperData->APIReq("orderStatus/$payment_ref","GET","",$apiKey);
          return $response;
     }
 
@@ -159,8 +158,8 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
 
         $params = [
             'appId' => $this->getConfigData('app_id'),
-            'activation_key' => $this->getConfigData('activation_key'),
-            'private_key' => $this->getConfigData('private_key'),
+//          'activation_key' => $this->getConfigData('activation_key'),
+//          'api_key' => $this->getConfigData('api_key'),
             'orderId' => $order->getIncrementId(),
             'orderAmount' => round($order->getGrandTotal(), 2),
             'orderCurrency' => $order->getOrderCurrencyCode(),
@@ -206,8 +205,9 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
                 'country' => $billingAddress->getCountryId()
             ]
         ];
-        $response = $this->helperData->APIReq("checkout/","POST", json_encode($data), $params['private_key']);
-        
+//      $response = $this->helperData->APIReq("checkout/","POST", json_encode($data), $params['api_key']);
+        $response = $this->helperData->APIReq("checkout/","POST", json_encode($data), $this->getConfigData('api_key'));
+
         //checkout curl post data end
         $cashierBaseUrl = $params["cashierBaseUrl"];
         $payment_base_url =    "'.$cashierBaseUrl.'?hash='";

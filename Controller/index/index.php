@@ -25,7 +25,7 @@ class Index extends \Magento\Framework\App\Action\Action
         try {
             $response = $this->helperData->APIReqActivation(
                 $this->getRequest()->getPost('environment'),
-                $this->getRequest()->getPost('privateKey'),
+                $this->getRequest()->getPost('apiKey'),
                 $this->getRequest()->getPost('activationKey')
             );
         } catch (\Exception $e) {

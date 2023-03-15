@@ -72,7 +72,7 @@ define(
                 context: this,
                 data: { isAjax: 1 },
                 dataType: 'json',
-                success: function(resp) {
+                success: (resp) => {
                     if ($.type(resp)!=='object' || $.isEmptyObject(resp)) {
                         fullScreenLoader.stopLoader();
                         alert({ content: $.mage.__('Sorry, something went wrong. Please try again.') });
@@ -84,7 +84,7 @@ define(
                     scr.onload = () => { handleScrLoad(resp) };
                     document.head.appendChild(scr);
                 },
-                error: function (resp) {
+                error: () => {
                     fullScreenLoader.stopLoader();
                     alert({ content: $.mage.__('Sorry, something went wrong. Please try again later.') });
                 }

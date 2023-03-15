@@ -91,7 +91,7 @@ class Paytiko extends AbstractHelper
         }
         curl_close($ch);
         $resp = json_decode($result, true);
-        if ($resp === null || json_last_error() > 0) {
+        if ($resp === null || !is_array($resp)) {
             throw new \Exception("Error: server sent an unexpected response");
         }
         return $resp ?: [];

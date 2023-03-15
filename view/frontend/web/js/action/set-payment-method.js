@@ -28,7 +28,7 @@ define(
             }
             let handleScrLoad = (resp) => {
                 fullScreenLoader.stopLoader();
-                customerData.invalidate(['cart']);
+                //customerData.invalidate(['cart']);
 
                 jqCont = $(
                     '<div id="paytiko_container" style="position:fixed; top:0; left:0; bottom:0; right:0; z-index: 10000; background:rgba(40,40,40,0.5);">' +

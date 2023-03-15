@@ -57,8 +57,7 @@ define(
                         type: 'get',
                         context: this,
                         dataType: 'json',
-                        success: function (response) {
-                        }
+                        success: () => {}
                     });
                 });
                 window.addEventListener('resize', updateIfr, false);
@@ -82,7 +81,7 @@ define(
                     let scr = document.createElement('script');
                     scr.type = 'text/javascript';
                     scr.src  = resp.embedScriptUrl;
-                    scr.onload = handleScrLoad;
+                    scr.onload = () => { handleScrLoad(resp) };
                     document.head.appendChild(scr);
                 },
                 error: function (resp) {

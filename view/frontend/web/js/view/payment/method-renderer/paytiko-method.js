@@ -3,7 +3,7 @@ define(
         'Magento_Checkout/js/view/payment/default',
         'Paytiko_PaytikoPayments/js/action/set-payment-method',
     ],
-    function(Component,setPaymentMethod){
+    function(Component, setPaymentMethod){
     'use strict';
 
     return Component.extend({

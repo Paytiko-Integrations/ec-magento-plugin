@@ -40,7 +40,7 @@ class Response extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
                 );
                 $connection = $this->_resources->getConnection();
 
-                $sql ="Select `entity_id` from " .$this->_resources->getTableName("sales_order") ." where `paytiko_order_ref` = '" . $orderRef . "'";
+                $sql ="SELECT `entity_id` FROM {$this->_resources->getTableName("sales_order")} WHERE `paytiko_order_ref`='{$orderRef}'";
                 $resultid = $connection->fetchAll($sql);
                 $orderId = $resultid[0];
                 // $statusCode = $result->statusCode;

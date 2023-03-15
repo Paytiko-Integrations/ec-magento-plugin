@@ -7,18 +7,12 @@ use Magento\Framework\UrlInterface;
 class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
 
     const PAYMENT_PAYTIKO_CODE = 'paytiko';
-   
 
     protected $_template = 'Paytiko_PaytikoPayments::system/config/infoLink.phtml';
-
     protected $_code = self::PAYMENT_PAYTIKO_CODE;
-
     protected $_canCapture = true;
-
     protected $_canCapturePartial = true;
-
     protected $_canRefund = true;
-
     protected $_canRefundInvoicePartial = true;
 
     /**
@@ -151,7 +145,6 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
     }
 
     public function buildCheckoutRequest() {
-        $env = $this->getConfigData('environment');
         $timestamp = time();
         $order = $this->checkoutSession->getLastRealOrder();
         $billingAddress = $order->getBillingAddress();
@@ -160,29 +153,16 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
             'appId' => $this->getConfigData('app_id'),
 //          'activation_key' => $this->getConfigData('activation_key'),
 //          'api_key' => $this->getConfigData('api_key'),
+//          'coreBaseUrl' => $this->getConfigData('coreBaseUrl'),
+            'embedScriptUrl' => $this->getConfigData('embedScriptUrl'),
+            'cashierBaseUrl' => $this->getConfigData('cashierBaseUrl'),
             'orderId' => $order->getIncrementId(),
             'orderAmount' => round($order->getGrandTotal(), 2),
             'orderCurrency' => $order->getOrderCurrencyCode(),
             'customerName' => $billingAddress->getFirstName(). " ". $billingAddress->getLastName(),
             'customerEmail' => $order->getCustomerEmail(),
-            'customerPhone' => $billingAddress->getTelephone(),
-            'cashierBaseUrl' => $this->getConfigData('cashierBaseUrl'),
-            'coreBaseUrl' => $this->getConfigData('coreBaseUrl'),
-            'embedScriptUrl' => $this->getConfigData('embedScriptUrl')
+            'customerPhone' => $billingAddress->getTelephone()
         ];
-
-/*      $product_data = '';
-        foreach ($order->getAllItems() as $item) {
-          $product_name = $item->getName();
-          $product_id = $item->getProductId();
-          $price = number_format($item->getPrice(), 2);
-          $quantity = round($item->getQtyOrdered());
-          //$tax = number_format($item->getBaseTaxAmount(), 2);
-          $tax = number_format($item->getTaxAmount(), 2);
-          $subtotal = number_format($item->getBaseRowTotal(), 2);
-          $subtotalamount = $tax + $subtotal;
-          $product_data .= '{"name":"'.$product_name.'","itemId":"'.$product_id.'","quantity":"'.$quantity.'","cost":"'.$price.'","price":"'.$price.'", "tax":"'.$tax.'", "variation_id":0, "subtotal":"'.$subtotalamount.'", "total":"'.$subtotalamount.'" },';
-        }*/
 
         $invoiceId = "M2-{$params["orderId"]}-{$timestamp}";
         $data = [
@@ -205,43 +185,34 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
                 'country' => $billingAddress->getCountryId()
             ]
         ];
-//      $response = $this->helperData->APIReq("checkout/","POST", json_encode($data), $params['api_key']);
         $response = $this->helperData->APIReq("checkout/","POST", json_encode($data), $this->getConfigData('api_key'));
 
-        //checkout curl post data end
         $cashierBaseUrl = $params["cashierBaseUrl"];
         $payment_base_url =    "'.$cashierBaseUrl.'?hash='";
 
         $params["urlparam"] = $payment_base_url;
-        $params["token_val"] = $response['cashierSessionToken'];
-        $params["url"] = $params["urlparam"].$params["token_val"];
+        $params["sessionToken"] = $response['cashierSessionToken'];
+        $params["url"] = $params["urlparam"].$params["sessionToken"];
         $params["orderReference"] = $invoiceId;
-        $params["mola_inc_id"] = $invoiceId;
 
         return $params;
     }
 
-     public function preProcessing(\Magento\Sales\Model\Order $order,
-            \Magento\Framework\DataObject $payment, $response) {
-        
+     public function preProcessing(\Magento\Sales\Model\Order $order, \Magento\Framework\DataObject $payment, $response) {
         $this->_resources = \Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Framework\App\ResourceConnection');
-
         $connection = $this->_resources->getConnection();
-
         $order = $this->checkoutSession->getLastRealOrder();
         $orderId = $order->getIncrementId();
-
-        $sql = "UPDATE {$this->_resources->getTableName('sales_order')} SET `paytiko_order_ref`='{$response["orderReference"]}' WHERE `increment_id`={$orderId}";
-        $connection->query($sql);
-
-        $sql = "UPDATE " . $this->_resources->getTableName('sales_order') . " Set `paytiko_order_id` ='".$response["mola_inc_id"]."' where `increment_id` = ".$orderId;
+        $sql = "UPDATE {$this->_resources->getTableName('sales_order')} SET ".
+            "`paytiko_order_ref`='{$response["orderReference"]}', `paytiko_order_id`='{$response["orderReference"]}' ".
+            "WHERE `increment_id`={$orderId}";
         $connection->query($sql);
     }
 
-
-    public function postProcessing(\Magento\Sales\Model\Order $order,
-            \Magento\Framework\DataObject $payment,  $transactionReference) {
-        
+    public function postProcessing(
+        \Magento\Sales\Model\Order $order,
+        \Magento\Framework\DataObject $payment,  $transactionReference
+    ) {
         $payment->setTransactionId($transactionReference);
         $payment->setTransactionAdditionalInfo('Transaction Message', $transactionReference);
         $payment->setAdditionalInformation('paytiko_payment_status', 'Paid');
@@ -251,5 +222,4 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         $order->setStatus('complete');
         $order->save();
     }
-
 }

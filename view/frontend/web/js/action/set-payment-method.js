@@ -52,13 +52,13 @@ define(
                 $('.paytiko-cashier').css({ width:'100%', height:'100%', border:'none' });
                 $('#paytiko_close').click(() => {
                     jqCont.hide();
-                    $.ajax({
-                        url: restorecart,
-                        type: 'get',
-                        context: this,
-                        dataType: 'json',
-                        success: () => {}
-                    });
+                    // $.ajax({
+                    //     url: restorecart,
+                    //     type: 'get',
+                    //     context: this,
+                    //     dataType: 'json',
+                    //     success: () => {}
+                    // });
                 });
                 window.addEventListener('resize', updateIfr, false);
                 window.addEventListener('orientationchange', updateIfr, false);
@@ -70,7 +70,7 @@ define(
                 url: serviceUrl,
                 type: 'post',
                 context: this,
-                data: { isAjax: 1 },
+                data: { action: 'getCheckoutData' },
                 dataType: 'json',
                 success: (resp) => {
                     if ($.type(resp)!=='object' || $.isEmptyObject(resp)) {

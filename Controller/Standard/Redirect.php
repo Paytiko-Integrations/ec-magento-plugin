@@ -5,14 +5,14 @@ class Redirect extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
 {
     public function execute()
     {
-        $req = $this->getRequest();
+        $data = json_decode($this->getRequest()->getContent());
 
-        if ($req->getParam('action') === 'getCheckoutData') {
+        if ($data['action'] === 'getCheckoutData') {
             $params = $this->getPaymentMethod()->buildCheckoutRequest();
             return $this->resultJsonFactory->create()->setData($params);
         }
 
-        if ($req->getParam('action') === 'restoreCart') {
+        if ($data['action'] === 'restoreCart') {
             $this->_checkoutSession->restoreQuote();
             return $this->resultJsonFactory->create()->setData(['result' => 'ok']);
         }

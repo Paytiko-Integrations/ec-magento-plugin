@@ -12,7 +12,6 @@ define(
         return function (messageContainer) {
             let email = customer.isLoggedIn() ? customer.customerData.email : quote.guestEmail;
             let serviceUrl = window.checkoutConfig.payment.paytiko.redirectUrl+'?email='+email;
-            let restorecart = window.checkoutConfig.payment.paytiko.redirectUrl+'?cartrestore=yes&email='+email;
             let jqCont;
             let updateIfr = () => {
                 const ifr = $('#paytiko_ifr');
@@ -53,9 +52,10 @@ define(
                 $('#paytiko_close').click(() => {
                     fullScreenLoader.startLoader();
                     $.ajax({
-                        url: restorecart,
-                        type: 'get',
+                        url: serviceUrl,
+                        type: 'post',
                         context: this,
+                        data: { action: 'restoreCart', email },
                         dataType: 'json',
                         success: () => {
                             fullScreenLoader.stopLoader();

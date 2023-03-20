@@ -5,7 +5,7 @@ class Redirect extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
 {
     public function execute()
     {
-        $data = json_decode($this->getRequest()->getContent());
+        $data = json_decode($this->getRequest()->getContent(), true);
 
         if ($data['action'] === 'getCheckoutData') {
             $params = $this->getPaymentMethod()->buildCheckoutRequest();

@@ -13,6 +13,11 @@ define(
             let email = customer.isLoggedIn() ? customer.customerData.email : quote.guestEmail;
             let serviceUrl = window.checkoutConfig.payment.paytiko.redirectUrl;
             let jqCont;
+
+            let showErr = (msg) => {
+                alert({ content: $.mage.__(msg || 'Sorry, something went wrong. Please try again later.') });
+            }
+
             let updateIfr = () => {
                 const ifr = $('#paytiko_ifr');
                 if (!ifr.length) return;
@@ -25,9 +30,12 @@ define(
                     top:parseInt(pos.top - $(window).scrollTop() - 12) + 'px'
                 });
             }
-            let handleScrLoad = (resp) => {
+
+            let showCashier = (resp) => {
                 fullScreenLoader.stopLoader();
                 //customerData.invalidate(['cart']);
+
+                window.addEventListener('beforeunload', beforeUnloadHandler, { capture: true });
 
                 jqCont = $('#paytiko_container');
                 if (jqCont.length) {
@@ -56,55 +64,67 @@ define(
                     return;
                 }
                 $('.paytiko-cashier').css({ width:'100%', height:'100%', border:'none' });
-                $('#paytiko_close').click(() => {
-                    fullScreenLoader.startLoader();
-                    $.ajax({
-                        url: serviceUrl,
-                        type: 'post',
-                        context: this,
-                        data: { action: 'restoreCart', email },
-                        dataType: 'json',
-                        success: () => {
-                            fullScreenLoader.stopLoader();
-                            jqCont.hide();
-                        },
-                        error: () => {
-                            fullScreenLoader.stopLoader();
-                            alert({ content: $.mage.__('Sorry, something went wrong. Please try again later.') });
-                        }
-                    });
-                });
+                $('#paytiko_close').click(() => { hideCashier(); });
                 window.addEventListener('resize', updateIfr, false);
                 window.addEventListener('orientationchange', updateIfr, false);
                 updateIfr();
             }
 
-            fullScreenLoader.startLoader();
-            $.ajax({
-                url: serviceUrl,
-                type: 'post',
-                context: this,
-                data: { action: 'getCheckoutData' },
-                dataType: 'json',
-                success: (resp) => {
-                    if ($.type(resp)!=='object' || $.isEmptyObject(resp)) {
+            let beforeUnloadHandler = () => {
+                hideCashier(true);
+            }
+
+            let hideCashier = (reloadWindow) => {
+                if (!reloadWindow) {
+                    fullScreenLoader.startLoader();
+                }
+                fetch(serviceUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ action: 'restoreCart', email }),
+                    keepalive: true
+                })
+                .then(resp => resp.json())
+                .then(resp => {
+                    if (!reloadWindow) {
+                        window.removeEventListener('beforeunload', beforeUnloadHandler, {capture: true});
                         fullScreenLoader.stopLoader();
-                        alert({ content: $.mage.__('Sorry, something went wrong. Please try again.') });
+                        jqCont.hide();
+                    }
+                })
+                .catch(err => {
+                    if (!reloadWindow) {
+                        fullScreenLoader.stopLoader();
+                        showErr();
+                    }
+                });
+            }
+
+            ///////////////
+
+            fullScreenLoader.startLoader();
+            fetch(serviceUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: 'getCheckoutData' }),
+            })
+                .then(resp => resp.json())
+                .then(resp => {
+                    if (typeof resp !== 'object') {
+                        fullScreenLoader.stopLoader();
+                        showErr();
                         return;
                     }
                     let scr = document.createElement('script');
                     scr.type = 'text/javascript';
                     scr.src  = resp.embedScriptUrl;
-                    scr.onload = () => { handleScrLoad(resp) };
+                    scr.onload = () => { showCashier(resp) };
                     document.head.appendChild(scr);
-                },
-                error: () => {
+                })
+                .catch(err => {
                     fullScreenLoader.stopLoader();
-                    alert({ content: $.mage.__('Sorry, something went wrong. Please try again later.') });
-                }
-            });
+                    showErr();
+                });
         };
     }
 );
-
-

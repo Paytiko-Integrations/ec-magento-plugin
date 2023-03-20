@@ -32,7 +32,7 @@ class Redirect extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
             }
             $quote->setCustomerEmail($email);
             $quote->save();
-            return $this->resultJsonFactory->create()->setData([ result => 'ok' ]);
+            return $this->resultJsonFactory->create()->setData([ 'result' => 'ok' ]);
         }
         return;
 

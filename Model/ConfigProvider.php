@@ -15,7 +15,6 @@ class ConfigProvider implements \Magento\Checkout\Model\ConfigProviderInterface
     }
 
     public function getConfig(){
-
         return $this->method->isAvailable() ? [
             'payment'=>['paytiko'=>[
                 'redirectUrl'=>$this->method->getRedirectUrl()  

@@ -51,14 +51,21 @@ define(
                 }
                 $('.paytiko-cashier').css({ width:'100%', height:'100%', border:'none' });
                 $('#paytiko_close').click(() => {
-                    jqCont.hide();
-                    // $.ajax({
-                    //     url: restorecart,
-                    //     type: 'get',
-                    //     context: this,
-                    //     dataType: 'json',
-                    //     success: () => {}
-                    // });
+                    fullScreenLoader.startLoader();
+                    $.ajax({
+                        url: restorecart,
+                        type: 'get',
+                        context: this,
+                        dataType: 'json',
+                        success: () => {
+                            fullScreenLoader.stopLoader();
+                            jqCont.hide();
+                        },
+                        error: () => {
+                            fullScreenLoader.stopLoader();
+                            alert({ content: $.mage.__('Sorry, something went wrong. Please try again later.') });
+                        }
+                    });
                 });
                 window.addEventListener('resize', updateIfr, false);
                 window.addEventListener('orientationchange', updateIfr, false);

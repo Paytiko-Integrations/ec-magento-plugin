@@ -12,6 +12,27 @@ class Redirect extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
             $params = $this->getPaymentMethod()->buildCheckoutRequest();
             return $this->resultJsonFactory->create()->setData($params);
         }
+
+        if ($req->getParam('action')==='restoreCart') {
+            $this->_checkoutSession->restoreQuote();
+
+            $quote = $this->getQuote();
+            $email = $this->getRequest()->getParam("email");
+            if ($this->getCustomerSession()->isLoggedIn()) {
+                $this->getCheckoutSession()->loadCustomerQuote();
+                $quote->updateCustomerData($this->getQuote()->getCustomer());
+            } else {
+                $quote->setCustomerEmail($email);
+            }
+
+            if ($this->getCustomerSession()->isLoggedIn()) {
+                $quote->setCheckoutMethod(\Magento\Checkout\Model\Type\Onepage::METHOD_CUSTOMER);
+            } else {
+                $quote->setCheckoutMethod(\Magento\Checkout\Model\Type\Onepage::METHOD_GUEST);
+            }
+            $quote->setCustomerEmail($email);
+            $quote->save();
+        }
         return;
 
 //        $cartrestore = $this->getRequest()->getParam("cartrestore");

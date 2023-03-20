@@ -71,7 +71,7 @@ define(
                 updateIfr();
             }
 
-            let beforeUnloadHandler = () => {
+            let beforeUnloadHandler = function() {
                 hideCashier(true);
             }
 

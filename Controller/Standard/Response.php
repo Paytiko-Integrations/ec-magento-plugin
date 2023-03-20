@@ -27,7 +27,7 @@ class Response extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
                 $paymentMethod = $this->getPaymentMethod();
                 $params = $this->getRequest()->getParams();
 
-                $result = $this->getPaymentMethod()->getpaytikotransstatus( $params["ref"]);
+                $result = $this->getPaymentMethod()->getTransactionStatus( $params["ref"]);
                 $result = (object)$result;
                 $orderRef = $params["ref"];
                 $apiKey = \Magento\Framework\App\ObjectManager::getInstance()

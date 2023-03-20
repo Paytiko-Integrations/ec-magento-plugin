@@ -6,17 +6,20 @@ class Redirect extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
     public function execute()
     {
         $data = json_decode($this->getRequest()->getContent(), true);
+        $resp = [];
 
         if ($data['action'] === 'getCheckoutData') {
-            $params = $this->getPaymentMethod()->buildCheckoutRequest();
-            return $this->resultJsonFactory->create()->setData($params);
+            $resp = $this->getPaymentMethod()->buildCheckoutRequest();
+
+        } elseif ($data['action'] === 'restoreCart') {
+            $this->_checkoutSession->restoreQuote();
+            $resp = ['result' => 'ok'];
         }
 
-        if ($data['action'] === 'restoreCart') {
-            $this->_checkoutSession->restoreQuote();
-            return $this->resultJsonFactory->create()->setData(['result' => 'ok']);
-        }
+        return $this->resultJsonFactory->create()->setData($resp);
     }
+}
+
 
 //        $cartrestore = $this->getRequest()->getParam("cartrestore");
 //        if ($cartrestore == "yes") {
@@ -71,5 +74,4 @@ class Redirect extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
 //
 //        return $this->resultJsonFactory->create()->setData($params);
 //    }
-
-}
+//}

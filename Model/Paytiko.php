@@ -138,33 +138,30 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         return $this->getConfigData('test_url');
     }
 
-    public function getpaytikotransstatus($payment_ref){
-         $apiKey = $this->getConfigData("api_key");
-         $response = $this->helperData->APIReq("orderStatus/$payment_ref","GET","",$apiKey);
-         return $response;
+    public function getTransactionStatus($payment_ref){
+         return $this->helperData->APIReq("orderStatus/{$payment_ref}",'GET','', $this->getConfigData('api_key'));
     }
 
     public function buildCheckoutRequest() {
         $timestamp = time();
         $order = $this->checkoutSession->getLastRealOrder();
         $billingAddress = $order->getBillingAddress();
+        $orderId = $order->getIncrementId();
+        $invoiceId = "M2-{$orderId}-{$timestamp}";
 
         $params = [
             'appId' => $this->getConfigData('app_id'),
-//          'activation_key' => $this->getConfigData('activation_key'),
-//          'api_key' => $this->getConfigData('api_key'),
-//          'coreBaseUrl' => $this->getConfigData('coreBaseUrl'),
             'embedScriptUrl' => $this->getConfigData('embedScriptUrl'),
             'cashierBaseUrl' => $this->getConfigData('cashierBaseUrl'),
-            'orderId' => $order->getIncrementId(),
+            'orderId' => $orderId,
             'orderAmount' => round($order->getGrandTotal(), 2),
             'orderCurrency' => $order->getOrderCurrencyCode(),
             'customerName' => $billingAddress->getFirstName(). " ". $billingAddress->getLastName(),
             'customerEmail' => $order->getCustomerEmail(),
-            'customerPhone' => $billingAddress->getTelephone()
+            'customerPhone' => $billingAddress->getTelephone(),
+            'orderReference' => $invoiceId
         ];
 
-        $invoiceId = "M2-{$params["orderId"]}-{$timestamp}";
         $data = [
             'amount' => (int)($order->getTaxAmount() + $order->getBaseGrandTotal() * 100),
             'currency' => $order->getOrderCurrencyCode(),
@@ -186,14 +183,7 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
             ]
         ];
         $response = $this->helperData->APIReq("checkout/","POST", json_encode($data), $this->getConfigData('api_key'));
-
-        $cashierBaseUrl = $params["cashierBaseUrl"];
-        $payment_base_url =    "'.$cashierBaseUrl.'?hash='";
-
-        $params["urlparam"] = $payment_base_url;
-        $params["sessionToken"] = $response['cashierSessionToken'];
-        $params["url"] = $params["urlparam"].$params["sessionToken"];
-        $params["orderReference"] = $invoiceId;
+        $params['sessionToken'] = $response['cashierSessionToken'];
 
         return $params;
     }

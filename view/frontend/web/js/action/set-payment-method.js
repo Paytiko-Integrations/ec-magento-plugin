@@ -29,7 +29,8 @@ define(
                 fullScreenLoader.stopLoader();
                 //customerData.invalidate(['cart']);
 
-                if (jqCont) {
+                jqCont = $('#paytiko_container');
+                if (jqCont.length) {
                     jqCont.show();
                     updateIfr();
                     return;

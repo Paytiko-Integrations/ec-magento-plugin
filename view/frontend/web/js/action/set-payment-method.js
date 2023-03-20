@@ -11,7 +11,7 @@ define(
         'use strict';
         return function (messageContainer) {
             let email = customer.isLoggedIn() ? customer.customerData.email : quote.guestEmail;
-            let serviceUrl = window.checkoutConfig.payment.paytiko.redirectUrl+'?email='+email;
+            let serviceUrl = window.checkoutConfig.payment.paytiko.redirectUrl;
             let jqCont;
             let updateIfr = () => {
                 const ifr = $('#paytiko_ifr');
@@ -28,6 +28,12 @@ define(
             let handleScrLoad = (resp) => {
                 fullScreenLoader.stopLoader();
                 //customerData.invalidate(['cart']);
+
+                if (jqCont) {
+                    jqCont.show();
+                    updateIfr();
+                    return;
+                }
 
                 jqCont = $(
                     '<div id="paytiko_container" style="position:fixed; top:0; left:0; bottom:0; right:0; z-index: 10000; background:rgba(40,40,40,0.5);">' +

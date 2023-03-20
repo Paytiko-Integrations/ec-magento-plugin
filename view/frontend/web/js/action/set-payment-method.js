@@ -59,6 +59,7 @@ define(
                         locale: 'en-US'
                     });
                 } catch (err) {
+                    console.error(err);
                     jqCont.hide();
                     alert({ content: $.mage.__('Unable to render cashier:\n' + err) });
                     return;
@@ -93,6 +94,7 @@ define(
                     }
                 })
                 .catch(err => {
+                    console.error(err);
                     if (!reloadWindow) {
                         fullScreenLoader.stopLoader();
                         showErr();
@@ -122,6 +124,7 @@ define(
                     document.head.appendChild(scr);
                 })
                 .catch(err => {
+                    console.error(err);
                     fullScreenLoader.stopLoader();
                     showErr();
                 });

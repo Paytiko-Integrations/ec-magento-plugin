@@ -150,21 +150,20 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         $invoiceId = "M2-{$orderId}-{$timestamp}";
 
         $params = [
-            'appId' => $this->getConfigData('app_id'),
             'embedScriptUrl' => $this->getConfigData('embedScriptUrl'),
             'cashierBaseUrl' => $this->getConfigData('cashierBaseUrl'),
             'orderId' => $orderId,
-            'orderAmount' => round($order->getGrandTotal(), 2),
-            'orderCurrency' => $order->getOrderCurrencyCode(),
-            'customerName' => $billingAddress->getFirstName(). " ". $billingAddress->getLastName(),
-            'customerEmail' => $order->getCustomerEmail(),
-            'customerPhone' => $billingAddress->getTelephone(),
+//          'orderAmount' => round($order->getBaseGrandTotal(), 2),
+//          'orderCurrency' => $order->getBaseCurrencyCode(),   //$order->getOrderCurrencyCode(),
+//          'customerName' => $billingAddress->getFirstName(). " ". $billingAddress->getLastName(),
+//          'customerEmail' => $order->getCustomerEmail(),
+//          'customerPhone' => $billingAddress->getTelephone(),
             'orderReference' => $invoiceId
         ];
 
         $data = [
             'amount' => (int)($order->getTaxAmount() + $order->getBaseGrandTotal() * 100),
-            'currency' => $order->getOrderCurrencyCode(),
+            'currency' => $order->getBaseCurrencyCode(),    //$order->getOrderCurrencyCode(),
             'orderId' => $invoiceId,
             'successRedirectUrl' => $this->getReturnUrl().'?ref='.$invoiceId,
             'failedRedirectUrl' => $this->getReturnUrl().'?ref='.$invoiceId,

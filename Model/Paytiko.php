@@ -98,10 +98,10 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         ];
     }
 
-     public function preProcessing(
+    public function preProcessing(
          \Magento\Sales\Model\Order $order,
          $orderRef
-     ) {
+    ) {
         $this->_resources = \Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Framework\App\ResourceConnection');
         $connection = $this->_resources->getConnection();
         $order = $this->checkoutSession->getLastRealOrder();

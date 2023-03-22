@@ -17,7 +17,7 @@ class Response extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
         } else {
             try {
                 $orderRef = $params['ref'];
-                $paytikoTransactData = (object)$this->getPaymentMethod()->getTransactionStatus($orderRef);
+                $paytikoTransactData = $this->getPaymentMethod()->getTransactionStatus($orderRef);
 
                 $this->_resources = \Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Framework\App\ResourceConnection');
                 $connection = $this->_resources->getConnection();
@@ -27,7 +27,7 @@ class Response extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
                 }
                 $order = $this->getOrder($orderRec[0]['entity_id']);
                 $currStatus = $order->getStatus();
-                $newStatus = strtolower($paytikoTransactData->TransactionStatus);
+                $newStatus = strtolower($paytikoTransactData['TransactionStatus']);
 
                 if ($newStatus==='success') {
                     $this->messageManager->addSuccess(__('Your payment was successful'));

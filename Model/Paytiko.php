@@ -94,7 +94,7 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
             'embedScriptUrl' => $this->getConfigData('embedScriptUrl'),
             'cashierBaseUrl' => $this->getConfigData('cashierBaseUrl'),
             'sessionToken'   => $response['cashierSessionToken'],
-            'orderId' => $orderId
+            'orderId' => $invoiceId
         ];
     }
 

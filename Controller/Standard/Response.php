@@ -27,7 +27,7 @@ class Response extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
                 }
                 $order = $this->getOrder($orderRec[0]['entity_id']);
                 $currStatus = $order->getStatus();
-                $newStatus = strtolower($paytikoTransactData['TransactionStatus']);
+                $newStatus = strtolower($paytikoTransactData['statusDescription']);
 
                 if ($newStatus==='success') {
                     $this->messageManager->addSuccess(__('Your payment was successful'));

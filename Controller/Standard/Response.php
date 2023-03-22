@@ -38,7 +38,6 @@ class Response extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
                     $url = 'checkout/onepage/success';
 
                 } elseif ($newStatus==='rejected' || $newStatus==='failed') {
-                    $order->cancel()->save();
                     $this->_checkoutSession->restoreQuote();
                     $this->messageManager->addErrorMessage(__('Payment has been canceled or failed'));
                     $url = 'checkout/cart';
@@ -51,8 +50,9 @@ class Response extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
                     if ($newStatus == "success") {
                         $this->getPaymentMethod()->postProcessing($order, $orderRef);
                     } elseif ($newStatus == "rejected" || $newStatus == "failed") {
-                        $order->cancel()->save();
-                        $this->_cancelPayment();
+//                      $order->cancel()->save();
+                        $order->setStatus('canceled');
+                        $order->save();
                     }
                 }
 

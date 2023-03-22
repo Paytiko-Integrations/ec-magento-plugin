@@ -57,7 +57,7 @@ class Response extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
                 }
 
             } catch (\Exception $e) {
-                $this->messageManager->addExceptionMessage($e, __('There has been an error. Please try refreshing this page.'));
+                $this->messageManager->addExceptionMessage($e, __('There has been an error. Please try refreshing this page.'.$e));
                 $url = 'checkout/cart';
             }
         }

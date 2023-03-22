@@ -10,36 +10,11 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
 
     protected $_template = 'Paytiko_PaytikoPayments::system/config/infoLink.phtml';
     protected $_code = self::PAYMENT_PAYTIKO_CODE;
-    protected $_canCapture = true;
-    protected $_canCapturePartial = true;
-    protected $_canRefund = true;
-    protected $_canRefundInvoicePartial = true;
-
-    /**
-     *
-     * @var \Magento\Framework\UrlInterface 
-     */
     protected $urlBuilder;
-
     protected $_urlBuilder;
-    
     private $checkoutSession;
 
-    /**
-     * 
-     * @param \Magento\Framework\Model\Context $context
-     * @param \Magento\Framework\Registry $registry
-     * @param \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory
-     * @param \Magento\Framework\Api\AttributeValueFactory $customAttributeFactory
-     * @param \Magento\Payment\Helper\Data $paymentData
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Magento\Payment\Model\Method\Logger $logger
-     * @param \Magento\Framework\UrlInterface $urlBuilder
-     * @param \Magento\Framework\Model\ResourceModel\AbstractResource $resource
-     * @param \Magento\Framework\Data\Collection\AbstractDb $resourceCollection
-     * @param array $data
-     */
-      public function __construct(
+    public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory,
@@ -53,7 +28,6 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         \Magento\Checkout\Model\Session $checkoutSession,
         UrlInterface $urlBuilder,
         \Paytiko\PaytikoPayments\Helper\Paytiko $helperData
-              
     ) {
         $this->helper = $helper;
         $this->orderSender = $orderSender;
@@ -61,7 +35,6 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         $this->checkoutSession = $checkoutSession;
         $this->urlBuilder = $urlBuilder;
         $this->helperData = $helperData;
-        
 
         parent::__construct(
             $context,
@@ -72,7 +45,6 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
             $scopeConfig,
             $logger
         );
-
     }
 
     public function getRedirectUrl() {
@@ -87,57 +59,6 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         return $this->helper->getUrl($this->getConfigData('notify_url'));
     }
 
-    public function authorize(\Magento\Payment\Model\InfoInterface $payment, $amount)
-      {
-        if (!$this->canAuthorize()) {
-            throw new \Magento\Framework\Exception\LocalizedException(__('The authorize action is not available.'));
-        }
-        return $this;
-      }
-    /**
-     * Capture payment abstract method
-     *
-     * @param \Magento\Framework\DataObject|InfoInterface $payment
-     * @param float $amount
-     * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @api
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function capture(\Magento\Payment\Model\InfoInterface $payment, $amount)
-    {
-        if (!$this->canCapture()) {
-            throw new \Magento\Framework\Exception\LocalizedException(__('The capture action is not available.'));
-        }
-        return $this;
-    }
-    /**
-     * Refund specified amount for payment
-     *
-     * @param \Magento\Framework\DataObject|InfoInterface $payment
-     * @param float $amount
-     * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @api
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function refund(\Magento\Payment\Model\InfoInterface $payment, $amount)
-    {
-      throw new \Magento\Framework\Exception\LocalizedException(__('Refund not available.'));
-    }
-
-    /**
-     * Return url according to environment
-     * @return string
-     */
-    public function getCgiUrl() {
-        $env = $this->getConfigData('environment');
-        if ($env === 'prod') {
-            return $this->getConfigData('prod_url');
-        }
-        return $this->getConfigData('test_url');
-    }
-
     public function getTransactionStatus($payment_ref){
          return $this->helperData->APIReq("orderStatus/{$payment_ref}",'GET','', $this->getConfigData('api_key'));
     }
@@ -148,25 +69,12 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         $billingAddress = $order->getBillingAddress();
         $orderId = $order->getIncrementId();
         $invoiceId = "M2-{$orderId}-{$timestamp}";
-
-        $params = [
-            'embedScriptUrl' => $this->getConfigData('embedScriptUrl'),
-            'cashierBaseUrl' => $this->getConfigData('cashierBaseUrl'),
-            'orderId' => $orderId,
-//          'orderAmount' => round($order->getBaseGrandTotal(), 2),
-//          'orderCurrency' => $order->getBaseCurrencyCode(),   //$order->getOrderCurrencyCode(),
-//          'customerName' => $billingAddress->getFirstName(). " ". $billingAddress->getLastName(),
-//          'customerEmail' => $order->getCustomerEmail(),
-//          'customerPhone' => $billingAddress->getTelephone(),
-            'orderReference' => $invoiceId
-        ];
-
         $data = [
             'amount' => (int)($order->getTaxAmount() + $order->getBaseGrandTotal() * 100),
             'currency' => $order->getBaseCurrencyCode(),    //$order->getOrderCurrencyCode(),
             'orderId' => $invoiceId,
-            'successRedirectUrl' => $this->getReturnUrl().'?ref='.$invoiceId,
-            'failedRedirectUrl' => $this->getReturnUrl().'?ref='.$invoiceId,
+            'successRedirectUrl' => $this->getReturnUrl().'?st=1&ref='.$invoiceId,
+            'failedRedirectUrl' => $this->getReturnUrl().'?st=0&ref='.$invoiceId,
             'webhookUrl' => $this->getNotifyUrl(),
             'billingDetails' => [
                 'uniqueIdentifier' => $order->getCustomerId() ? "M2-".$order->getCustomerId() : "M2-G-".$timestamp,
@@ -182,28 +90,33 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
             ]
         ];
         $response = $this->helperData->APIReq("checkout/","POST", json_encode($data), $this->getConfigData('api_key'));
-        $params['sessionToken'] = $response['cashierSessionToken'];
-
-        return $params;
+        return [
+            'embedScriptUrl' => $this->getConfigData('embedScriptUrl'),
+            'cashierBaseUrl' => $this->getConfigData('cashierBaseUrl'),
+            'sessionToken'   => $response['cashierSessionToken'],
+            'orderId' => $orderId
+        ];
     }
 
-     public function preProcessing(\Magento\Sales\Model\Order $order, \Magento\Framework\DataObject $payment, $response) {
+     public function preProcessing(
+         \Magento\Sales\Model\Order $order,
+         $orderRef
+     ) {
         $this->_resources = \Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Framework\App\ResourceConnection');
         $connection = $this->_resources->getConnection();
         $order = $this->checkoutSession->getLastRealOrder();
         $orderId = $order->getIncrementId();
-        $sql = "UPDATE {$this->_resources->getTableName('sales_order')} SET ".
-            "`paytiko_order_ref`='{$response["orderReference"]}', `paytiko_order_id`='{$response["orderReference"]}' ".
-            "WHERE `increment_id`={$orderId}";
+        $sql = "UPDATE {$this->_resources->getTableName('sales_order')} SET `paytiko_order_ref`='{$orderRef}', `paytiko_order_id`='{$orderRef}' WHERE `increment_id`={$orderId}";
         $connection->query($sql);
     }
 
     public function postProcessing(
         \Magento\Sales\Model\Order $order,
-        \Magento\Framework\DataObject $payment,  $transactionReference
+        $orderRef
     ) {
-        $payment->setTransactionId($transactionReference);
-        $payment->setTransactionAdditionalInfo('Transaction Message', $transactionReference);
+        $payment = $order->getPayment();
+        $payment->setTransactionId($orderRef);
+        $payment->setTransactionAdditionalInfo('Transaction Message', $orderRef);
         $payment->setAdditionalInformation('paytiko_payment_status', 'Paid');
         $payment->addTransaction(TransactionInterface::TYPE_ORDER);
         $payment->setIsTransactionClosed(0);

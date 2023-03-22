@@ -10,6 +10,10 @@ class Redirect extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
 
         if ($data['action'] === 'getCheckoutData') {
             $resp = $this->getPaymentMethod()->buildCheckoutRequest();
+            $this->getPaymentMethod()->preProcessing(
+                $this->getOrder(),
+                $resp['orderId']
+            );
 
         } elseif ($data['action'] === 'restoreCart') {
             $this->_checkoutSession->restoreQuote();

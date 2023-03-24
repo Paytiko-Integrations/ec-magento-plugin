@@ -51,7 +51,7 @@ class Response extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
                         $this->getPaymentMethod()->postProcessing($order, $orderRef);
                     } elseif ($newStatus == "rejected" || $newStatus == "failed") {
 //                      $order->cancel()->save();
-                        $order->setStatus('canceled');
+                        $order->setState('canceled')->setStatus('canceled');
                         $order->save();
                     }
                 }

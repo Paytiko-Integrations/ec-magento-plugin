@@ -121,7 +121,12 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         $payment->addTransaction(TransactionInterface::TYPE_ORDER);
         $payment->setIsTransactionClosed(0);
         $payment->place();
-        $order->setStatus('complete');
+        $order->setState('complete')->setStatus('complete');
         $order->save();
+
+        //
+        $this->checkoutSession->clearQuote();
+        $this->checkoutSession->clearStorage();
+        $this->checkoutSession->restoreQuote();
     }
 }

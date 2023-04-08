@@ -106,7 +106,7 @@ class Paytiko extends \Magento\Payment\Model\Method\AbstractMethod {
         $connection = $this->_resources->getConnection();
         $order = $this->checkoutSession->getLastRealOrder();
         $orderId = $order->getIncrementId();
-        $sql = "UPDATE {$this->_resources->getTableName('sales_order')} SET `paytiko_order_ref`='{$orderRef}', `paytiko_order_id`='{$orderRef}' WHERE `increment_id`={$orderId}";
+        $sql = "UPDATE {$this->_resources->getTableName('sales_order')} SET `paytiko_order_ref`='{$orderRef}' WHERE `increment_id`={$orderId}";
         $connection->query($sql);
     }
 

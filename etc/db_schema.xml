@@ -3,6 +3,5 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
     <table name="sales_order" resource="default" engine="innodb">
         <column xsi:type="text" name="paytiko_order_ref" nullable="false" comment="Added by Paytiko"/>
-        <column xsi:type="text" name="paytiko_order_id" nullable="false" comment="Added by Paytiko"/>
     </table>
 </schema>

@@ -1,33 +1,33 @@
 {
-    "name": "Paytiko/PaytikoPayments",
-    "description": "payment gateway extension for magento by Paytiko",
-    "require": {
-        "magento/framework": "~100.0||~101.0",
-        "magento/module-checkout" : "~100.0||~101.0",
-        "magento/module-sales" : "~100.0||~101.0",
-        "magento/module-payment" : "~100.0||~101.0"              
-    },
-    "keywords": [
-      "Paytiko", "magento", "payments", "india",
-      "payment gateway", "wallets", "netbanking"
+  "name": "paytiko/paytikopayments",
+  "description": "Paytiko payments extension for Magento 2",
+  "require": {
+    "php": ">=7.3",
+    "magento/framework": ">=100.0",
+    "magento/module-checkout": ">=100.0",
+    "magento/module-sales": ">=100.0",
+    "magento/module-payment": ">=100.0"
+  },
+  "keywords": ["paytiko", "magento", "payment", "gateway", "ecommerce", "creditcard", "bank", "bitcoin", "transaction", "refund", "charge"],
+  "suggest": {
+    "magento/module-checkout-agreements": "100.0.*"
+  },
+  "homepage": "https://paytiko.com",
+  "support": {
+    "email": "support@paytiko.com",
+    "docs": "https://paytiko.com/docs/"
+  },
+  "type": "magento2-module",
+  "version": "1.0.0",
+  "license": [
+    "proprietary"
+  ],
+  "autoload": {
+    "files": [
+      "registration.php"
     ],
-    "suggest": {
-      "magento/module-checkout-agreements": "100.0.*"
-    },
-    "homepage": "https://Paytiko.com",
-    "support": {
-      "email": "techsupport@Paytiko.com",
-      "docs": "https://docs.Paytiko.com/docs/"
-    },
-    "type": "magento2-module",
-     "version": "1.0.0",
-     "license": [
-        "MIT"
-    ],
-    "autoload": {
-        "files": [ "registration.php" ],
-        "psr-4": {
-            "Paytiko\\PaytikoPayments\\": ""
-        }
+    "psr-4": {
+      "Paytiko\\PaytikoPayments\\": ""
     }
+  }
 }

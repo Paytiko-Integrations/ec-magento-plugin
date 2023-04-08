@@ -29,7 +29,7 @@ class Index extends \Magento\Framework\App\Action\Action
                 $this->getRequest()->getPost('activationKey')
             );
         } catch (\Exception $e) {
-            echo json_encode(['status' => 'fail', 'message' => 'Activation failed. Check your input or contact support.']);
+            print_r(json_encode(['status' => 'fail', 'message' => 'Activation failed. Check your input or contact support.']));
             return;
         }
 
@@ -50,10 +50,10 @@ class Index extends \Magento\Framework\App\Action\Action
 
             $sql = "UPDATE {$tableName} SET value='{$embedScriptUrl}' WHERE path='payment/paytiko/embedScriptUrl'";
             $connection->query($sql);
-            echo json_encode(array_merge(['status' => 'ok', 'message' => 'Activation successful'], $response));
+            print_r(json_encode(array_merge(['status' => 'ok', 'message' => 'Activation successful'], $response)));
             return;
         }
 
-        echo json_encode(array_merge(['status' => 'fail', 'message' => 'Something went wrong. Check your input or contact support.'], $response));
+        print_r(json_encode(array_merge(['status' => 'fail', 'message' => 'Something went wrong. Check your input or contact support.'], $response)));
     }
 }

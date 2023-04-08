@@ -1,6 +1,6 @@
 <?php
 /**
- * Cashfree payments module for Magento 2
+ * Paytiko payments module for Magento 2
  */
 
 use \Magento\Framework\Component\ComponentRegistrar;

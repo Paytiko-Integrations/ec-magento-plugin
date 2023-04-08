@@ -15,14 +15,14 @@ class Notify extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
             ->getValue('payment/paytiko/api_key', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
         if ($data['Signature'] !== hash('sha256', "{$apiKey}:{$orderRef}")) {
-            exit();
+            return;
         }
 
         $this->_resources = \Magento\Framework\App\ObjectManager::getInstance()->get("Magento\Framework\App\ResourceConnection");
         $connection = $this->_resources->getConnection();
 
         $orderRec = $connection->fetchAll("SELECT `entity_id` FROM {$this->_resources->getTableName("sales_order")} WHERE `paytiko_order_ref`='{$orderRef}'");
-        if (empty($orderRec) || empty($orderRec[0])) exit();
+        if (empty($orderRec) || empty($orderRec[0])) return;
 
         $orderId = $orderRec[0]['entity_id'];
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();

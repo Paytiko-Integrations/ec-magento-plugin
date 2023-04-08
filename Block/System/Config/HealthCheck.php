@@ -8,7 +8,7 @@ use Magento\Framework\Data\Form\Element\AbstractElement;
 /**
  * Block class of Admin health check field
  *
- * @author Paytiko Co - Plugin Team
+ * @author Paytiko Plugin Team
  * @link   https://paytiko.co
  **/
 class HealthCheck extends Field

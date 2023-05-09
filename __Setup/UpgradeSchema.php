@@ -1,5 +1,5 @@
 <?php
-namespace Paytiko\PaytikoPayments\Setup;
+namespace Paytiko\PaytikoPayments\__Setup;
 
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;

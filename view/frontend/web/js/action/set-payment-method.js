@@ -112,16 +112,20 @@ define(
             })
                 .then(resp => resp.json())
                 .then(resp => {
-                    if (typeof resp !== 'object') {
-                        fullScreenLoader.stopLoader();
-                        showErr();
-                        return;
+                    if (resp.redirectUrl) {
+                        window.location.href = resp.redirectUrl;
+                    } else {
+                        if (typeof resp !== 'object') {
+                            fullScreenLoader.stopLoader();
+                            showErr();
+                            return;
+                        }
+                        let scr = document.createElement('script');
+                        scr.type = 'text/javascript';
+                        scr.src  = resp.embedScriptUrl;
+                        scr.onload = () => { showCashier(resp) };
+                        document.head.appendChild(scr);
                     }
-                    let scr = document.createElement('script');
-                    scr.type = 'text/javascript';
-                    scr.src  = resp.embedScriptUrl;
-                    scr.onload = () => { showCashier(resp) };
-                    document.head.appendChild(scr);
                 })
                 .catch(err => {
                     console.error(err);

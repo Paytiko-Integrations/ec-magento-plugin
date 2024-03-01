@@ -7,7 +7,7 @@ use Magento\Framework\App\Helper\Context;
 use Magento\Sales\Model\Order;
 
 const PROD_BASE_URL    = 'https://core.paytiko.com/api/cashier/ecommerce/';
-const SANDBOX_BASE_URL = 'https://qa-core.paytiko.com/api/cashier/ecommerce/';
+const SANDBOX_BASE_URL = 'https://uat-core.paytiko.com/api/cashier/ecommerce/';
 
 class Paytiko extends AbstractHelper
 {

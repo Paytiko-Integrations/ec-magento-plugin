@@ -3,6 +3,8 @@ namespace Paytiko\PaytikoPayments\Controller\Standard;
 
 class Response extends \Paytiko\PaytikoPayments\Controller\PaytikoAbstract
 {
+    private $_resources;
+
     public function execute()
     {
         $url = 'checkout';

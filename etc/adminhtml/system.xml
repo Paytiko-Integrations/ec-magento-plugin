@@ -38,7 +38,16 @@
                     <source_model>Paytiko\PaytikoPayments\Model\Environment</source_model>
                     <config_path>payment/paytiko/environment</config_path>
                 </field>
-                
+
+                <field id="payment_dialog" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Payment Dialog</label>
+                    <source_model>Paytiko\PaytikoPayments\Model\PaymentDialog</source_model>
+                    <config_path>payment/paytiko/paymentDialog</config_path>
+                </field>
+
+                <field id="cashierDescription" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Paytiko Descriptor</label>
+                </field>
             </group>
         </section>
     </system>

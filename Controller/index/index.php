@@ -6,18 +6,30 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\ResultFactory;
 
 
-class Index extends \Magento\Framework\App\Action\Action
+class Index implements \Magento\Framework\App\ActionInterface
+// class Index extends \Magento\Framework\App\Action\Action
 {
+    public $helperData;
+
+    /**
+     * @var \Magento\Framework\View\Result\PageFactory
+     */
     protected $_pageFactory;
+
+    /**
+     * @var \Magento\Framework\App\RequestInterface
+     */
+    protected $_request;
 
     public function __construct(
         \Magento\Framework\App\Action\Context      $context,
         \Magento\Framework\View\Result\PageFactory $pageFactory,
         \Paytiko\PaytikoPayments\Helper\Paytiko    $helperData)
     {
+        $this->_request = $context->getRequest();
         $this->_pageFactory = $pageFactory;
         $this->helperData = $helperData;
-        return parent::__construct($context);
+        return $context;
     }
 
     public function execute()
@@ -55,5 +67,15 @@ class Index extends \Magento\Framework\App\Action\Action
         }
 
         print_r(json_encode(array_merge(['status' => 'fail', 'message' => 'Something went wrong. Check your input or contact support.'], $response)));
+    }
+
+    /**
+     * Retrieve request object
+     *
+     * @return \Magento\Framework\App\RequestInterface
+     */
+    public function getRequest()
+    {
+        return $this->_request;
     }
 }
